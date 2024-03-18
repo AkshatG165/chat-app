@@ -1,4 +1,4 @@
-import Login from '@/components/login/login';
+import Login from '@/components/Login/Login';
 import Head from 'next/head';
 
 export default function Home() {

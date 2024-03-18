@@ -1,4 +1,4 @@
-import classes from './card.module.css';
+import classes from './Card.module.css';
 
 type Props = {
   children: React.ReactNode;

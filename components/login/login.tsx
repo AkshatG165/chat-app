@@ -1,5 +1,5 @@
-import classes from './login.module.css';
-import Card from '../ui/card';
+import classes from './Login.module.css';
+import Card from '../UI/Card';
 import { useState } from 'react';
 
 export default function Login() {

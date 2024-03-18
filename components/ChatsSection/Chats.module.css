@@ -1,0 +1,36 @@
+.chats {
+  margin: 10px 0;
+}
+
+.chat {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  height: 55px;
+  padding: 5px;
+}
+
+.profilepic {
+  border-radius: 5px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  height: 45px;
+  overflow: hidden;
+}
+
+.name {
+  font-size: small;
+  font-weight: bold;
+}
+
+.message {
+  font-size: 11px;
+}
+
+.active {
+  background-color: #d6ffd2;
+}

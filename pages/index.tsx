@@ -1,4 +1,5 @@
-import Head from "next/head";
+import Login from '@/components/login/login';
+import Head from 'next/head';
 
 export default function Home() {
   return (
@@ -10,7 +11,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <h1>Chat App</h1>
+        <Login />
       </main>
     </>
   );

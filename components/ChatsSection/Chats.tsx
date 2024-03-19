@@ -34,7 +34,7 @@ export default function Chats() {
 
   const chatsList = chats.map((chat) => (
     <Link
-      id={chat.id}
+      key={chat.id}
       href="#"
       className={`${classes.chat} ${
         chat.id === selectedChat ? classes.active : ''

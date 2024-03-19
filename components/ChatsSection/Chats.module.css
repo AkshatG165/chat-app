@@ -4,14 +4,29 @@
 
 .chat {
   display: flex;
-  align-items: flex-start;
   gap: 10px;
   height: 55px;
   padding: 5px;
 }
 
+.imgContainer {
+  position: relative;
+}
+
 .profilepic {
   border-radius: 5px;
+}
+
+.dot {
+  color: #11d100;
+  background-color: white;
+  position: absolute;
+  bottom: 4%;
+  right: -10%;
+  width: 12px;
+  height: 12px;
+  border: 2px solid white;
+  border-radius: 10px;
 }
 
 .content {

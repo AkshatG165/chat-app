@@ -3,8 +3,8 @@
 }
 
 .chat {
-  display: flex;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: 50px auto;
   height: 55px;
   padding: 5px;
 }
@@ -22,7 +22,7 @@
   background-color: white;
   position: absolute;
   bottom: 4%;
-  right: -10%;
+  right: 14%;
   width: 12px;
   height: 12px;
   border: 2px solid white;
@@ -35,6 +35,14 @@
   gap: 3px;
   height: 45px;
   overflow: hidden;
+  padding-right: 5px;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  align-items: center;
 }
 
 .name {

@@ -1,0 +1,56 @@
+.container {
+  margin: 10px 0;
+  padding: 5px;
+  overflow: scroll;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.container::-webkit-scrollbar {
+  display: none;
+}
+
+.message {
+  width: fit-content;
+  max-width: 60%;
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.rightMessage {
+  position: relative;
+  width: fit-content;
+  flex-direction: row-reverse;
+  align-self: flex-end;
+}
+
+.msgContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background-color: white;
+  padding: 5px 10px;
+  border-radius: 0 15px 15px 15px;
+  border: 1px solid rgb(236, 236, 236);
+}
+
+.rightMsgContainer {
+  background-color: #e3edfa;
+  border-radius: 15px 15px 0 15px;
+}
+
+.profilepic {
+  border-radius: 5px;
+}
+
+.text {
+  text-align: left;
+  font-size: 13px;
+}
+
+.date {
+  text-align: right;
+  font-size: 11px;
+}

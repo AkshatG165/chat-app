@@ -9,7 +9,7 @@ export default function ChatsSection() {
   return (
     <Card className={classes.card}>
       <div className={classes.header}>
-        <h2>Messages</h2>
+        <p>Messages</p>
         <Link href="#">
           <FaUserPlus className={classes.icon} />
         </Link>

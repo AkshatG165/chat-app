@@ -1,5 +1,5 @@
 .card {
-  background-color: #f9f9f9;
+  /* background-color: #efefef; */
   display: grid;
   grid-template-rows: 50px 40px auto;
   overflow: scroll;
@@ -13,7 +13,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 10px 15px;
+}
+
+.header p {
+  font-size: 19px;
 }
 
 .icon {

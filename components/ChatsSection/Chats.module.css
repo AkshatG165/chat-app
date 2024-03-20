@@ -1,5 +1,5 @@
 .chats {
-  margin: 10px 0;
+  margin: 10px 5px;
 }
 
 .chat {
@@ -7,6 +7,7 @@
   grid-template-columns: 50px auto;
   height: 55px;
   padding: 5px;
+  border-radius: 5px;
 }
 
 .imgContainer {
@@ -54,6 +55,7 @@
   font-size: 11px;
 }
 
-.active {
-  background-color: #d6ffd2;
+.active,
+.chat:hover {
+  background-color: white;
 }

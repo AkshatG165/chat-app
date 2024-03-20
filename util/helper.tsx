@@ -6,7 +6,6 @@ export function formatDate(date: Date) {
 }
 
 export function formatTime(date: Date) {
-  return `${date.toLocaleTimeString().slice(0, 4)} ${date
-    .toLocaleTimeString()
-    .slice(-2)}`;
+  const timeArr = date.toLocaleTimeString().split(':');
+  return `${timeArr[0]}:${timeArr[1]} ${timeArr[2].split(' ')[1]}`;
 }

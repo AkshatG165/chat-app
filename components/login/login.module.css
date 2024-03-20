@@ -90,11 +90,6 @@
   padding: 1px;
 }
 
-.login-form label:hover {
-  padding: 0;
-  border: 1px solid black;
-}
-
 .login-form img {
   width: 99px;
   height: 98px;

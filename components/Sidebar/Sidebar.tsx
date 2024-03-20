@@ -9,7 +9,7 @@ import { MdCall } from 'react-icons/md';
 
 export default function Sidebar() {
   return (
-    <Card className={classes.card}>
+    <div className={classes.card}>
       <div>
         <Link href="#">
           <CgProfile className={classes.icon} />
@@ -32,9 +32,9 @@ export default function Sidebar() {
       <div>
         <Link href="#">
           <IoSettingsSharp className={classes.icon} />
-          <p>Setting</p>
+          <p>Settings</p>
         </Link>
       </div>
-    </Card>
+    </div>
   );
 }

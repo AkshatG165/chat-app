@@ -40,6 +40,7 @@
   border-bottom: 1px solid lightgrey;
   padding: 5px 5px 5px 10px;
   font-size: 1rem;
+  border-radius: 5px;
 }
 
 .name input {
@@ -78,8 +79,7 @@
   background-color: white;
   height: 100px;
   width: 100px;
-  border-radius: 50px;
-  border: 1px solid lightgrey;
+  border-radius: 5px;
   font-size: 1rem;
   color: rgb(120, 120, 120);
   cursor: pointer;
@@ -87,15 +87,17 @@
   display: grid;
   place-items: center;
   text-align: center;
+  padding: 1px;
 }
 
 .login-form label:hover {
+  padding: 0;
   border: 1px solid black;
 }
 
 .login-form img {
-  width: 98px;
+  width: 99px;
   height: 98px;
-  border-radius: 49px;
+  border-radius: 5px;
   object-fit: cover;
 }

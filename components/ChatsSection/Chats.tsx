@@ -4,7 +4,7 @@ import profilePic from '../../public/pic.jpg';
 import Link from 'next/link';
 import { useState } from 'react';
 import { FaCircle } from 'react-icons/fa';
-import { formatDate, formatTime } from '@/util/helper';
+import { formatDate, formatTime } from '../../util/helper';
 
 const chats = [
   {

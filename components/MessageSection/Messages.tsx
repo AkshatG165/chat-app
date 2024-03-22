@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import classes from './Messages.module.css';
 import profilePic from '../../public/pic.jpg';
-import { formatTime } from '@/util/helper';
+import { formatTime } from '../../util/helper';
 
 const chat = {
   profilePic,

@@ -19,6 +19,7 @@ export default async function handler(
     const { firstName, lastName, email, password, profileImg } = req.body;
     const hashedPassword = await hashPassword(password);
     const data = { ...req.body, password: hashedPassword };
+    let emailExists = false;
 
     if (!firstName || !lastName || !email || !password || !profileImg)
       return res.status(422).json({ message: 'Invalid data' });
@@ -27,9 +28,11 @@ export default async function handler(
     const q = query(collection(db, 'users'), where('email', '==', email));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      if (doc.exists())
-        return res.status(422).json({ message: 'Email already exists' });
+      if (doc.exists()) emailExists = true;
     });
+
+    if (emailExists)
+      return res.status(422).json({ message: 'Email already exists' });
 
     try {
       const docRef = await addDoc(collection(db, 'users'), data);

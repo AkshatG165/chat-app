@@ -1,13 +1,9 @@
 import { db } from '@/util/firebase';
 import { checkPassword } from '@/util/helper';
-import {
-  DocumentData,
-  collection,
-  getDocs,
-  query,
-  where,
-} from 'firebase/firestore';
-import NextAuth from 'next-auth';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import NextAuth, { Session } from 'next-auth';
+import { AdapterUser } from 'next-auth/adapters';
+import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
 type User = {
@@ -52,6 +48,23 @@ export const authOptions = {
   secret: 'secretKey',
   session: {
     maxAge: 24 * 60 * 60,
+  },
+  callbacks: {
+    async jwt({ token, user }: any) {
+      if (user) return { ...token, user: user };
+      return token;
+    },
+    async session({ session, token }: any) {
+      return {
+        ...session,
+        user: {
+          firstName: token.user.firstName,
+          lastName: token.user.lastName,
+          email: token.user.email,
+          image: token.user.profileImg,
+        },
+      };
+    },
   },
 };
 

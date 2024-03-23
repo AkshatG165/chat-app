@@ -10,11 +10,13 @@ import {
 import { storage } from '@/util/firebase';
 import { useRouter } from 'next/router';
 import { signIn } from 'next-auth/react';
+import Loader from '../UI/Loader';
 
 export default function Login() {
   const [login, setLogin] = useState(true);
   const [selectedImage, setSelectedImage] = useState<null | string>(null);
   const [error, setError] = useState<null | string>();
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -24,6 +26,7 @@ export default function Login() {
 
     const fd = new FormData(e.currentTarget);
 
+    setLoading(true);
     //if signup
     if (!login) {
       let data = { ...Object.fromEntries(fd.entries()) };
@@ -68,9 +71,15 @@ export default function Login() {
         setError(res.error);
       } else router.replace('/');
     }
+    setLoading(false);
   };
 
-  const toggleHandler = () => setLogin((prev) => !prev);
+  const toggleHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+    document.querySelector('form')?.reset();
+    setSelectedImage(null);
+    setLogin((prev) => !prev);
+    setError(null);
+  };
 
   const addImgHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
@@ -134,19 +143,21 @@ export default function Login() {
             placeholder="Password"
           />
           {error && <p className={classes.error}>{error}</p>}
-          <button type="submit">{login ? 'Login' : 'Sign Up'}</button>
+          <button type="submit" disabled={loading}>
+            {loading ? <Loader color={'white'} /> : login ? 'Login' : 'Sign Up'}
+          </button>
         </form>
         {login ? (
           <p className={classes.register}>
             Don't have an account yet?{' '}
-            <button type="button" onClick={toggleHandler}>
+            <button type="button" disabled={loading} onClick={toggleHandler}>
               Register
             </button>
           </p>
         ) : (
           <p className={classes.register}>
             Already have an account?{' '}
-            <button type="button" onClick={toggleHandler}>
+            <button type="button" disabled={loading} onClick={toggleHandler}>
               Login
             </button>
           </p>

@@ -1,7 +1,7 @@
-import Login from '@/components/Login/Login';
 import Head from 'next/head';
+import Home from '../components/Home';
 
-export default function Home() {
+export default function HomePage() {
   return (
     <>
       <Head>
@@ -11,7 +11,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <Login />
+        <Home />
       </main>
     </>
   );

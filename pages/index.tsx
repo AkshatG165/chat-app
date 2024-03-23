@@ -1,5 +1,8 @@
 import Head from 'next/head';
 import Home from '../components/Home';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { getServerSession } from 'next-auth';
+import { authOptions } from './api/auth/[...nextauth]';
 
 export default function HomePage() {
   return (
@@ -15,4 +18,26 @@ export default function HomePage() {
       </main>
     </>
   );
+}
+
+type Context = {
+  req: NextApiRequest;
+  res: NextApiResponse;
+};
+
+export async function getServerSideProps({ req, res }: Context) {
+  const session = await getServerSession(req, res, authOptions);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
 }

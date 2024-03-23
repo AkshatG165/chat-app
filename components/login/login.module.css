@@ -96,3 +96,8 @@
   border-radius: 5px;
   object-fit: cover;
 }
+
+.error {
+  color: red;
+  text-align: center;
+}

@@ -1,13 +1,77 @@
 import classes from './Login.module.css';
 import Card from '../UI/Card';
 import { useState } from 'react';
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytes,
+} from 'firebase/storage';
+import { storage } from '@/util/firebase';
+import { useRouter } from 'next/router';
+import { signIn } from 'next-auth/react';
 
 export default function Login() {
   const [login, setLogin] = useState(true);
-  const [selectedImage, setSelectedImage] = useState('');
+  const [selectedImage, setSelectedImage] = useState<null | string>(null);
+  const [error, setError] = useState<null | string>();
+  const router = useRouter();
 
-  const submitHandler = () => {};
+  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+    const fromElem = e.currentTarget;
+    e.preventDefault();
+    setError(null);
+
+    const fd = new FormData(e.currentTarget);
+
+    //if signup
+    if (!login) {
+      let data = { ...Object.fromEntries(fd.entries()) };
+      const profileImg = data.profileImg as File;
+
+      try {
+        const imgRef = ref(
+          storage,
+          `profileImages/${Math.floor(Math.random() * 10000000000)}${
+            profileImg.name
+          }`
+        );
+        const resp = await uploadBytes(imgRef, profileImg);
+        if (resp.metadata) data.profileImg = await getDownloadURL(imgRef);
+
+        const res = await fetch('/api/user', {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!res.ok) {
+          const message = (await res.json()).message;
+          setError(message);
+          await deleteObject(imgRef);
+        } else {
+          fromElem.reset();
+          setSelectedImage(null);
+          setLogin(true);
+          router.reload();
+        }
+      } catch (e: any) {
+        setError(e);
+      }
+    } else {
+      const data = { ...Object.fromEntries(fd.entries()) };
+      const res = await signIn('credentials', { ...data, redirect: false });
+
+      if (res && !res.ok) {
+        setError(res.error);
+      } else router.replace('/');
+    }
+  };
+
   const toggleHandler = () => setLogin((prev) => !prev);
+
   const addImgHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (!file) return;
@@ -22,7 +86,7 @@ export default function Login() {
         <form className={classes['login-form']} onSubmit={submitHandler}>
           {!login && (
             <div>
-              <label htmlFor="profilepic">
+              <label htmlFor="profileImg">
                 {selectedImage ? (
                   <img src={selectedImage}></img>
                 ) : (
@@ -30,9 +94,9 @@ export default function Login() {
                 )}
               </label>
               <input
-                id="profilepic"
+                id="profileImg"
                 type="file"
-                name="profilepic"
+                name="profileImg"
                 accept="image/png, image/jpg, image/jpeg"
                 onChange={addImgHandler}
               />
@@ -41,16 +105,16 @@ export default function Login() {
           {!login && (
             <div className={classes.name}>
               <input
-                id="firstname"
+                id="firstName"
                 type="text"
-                name="firstname"
+                name="firstName"
                 placeholder="First Name"
                 required
               />
               <input
-                id="lastname"
+                id="lastName"
                 type="text"
-                name="lastname"
+                name="lastName"
                 placeholder="Last Name"
                 required
               />
@@ -69,6 +133,7 @@ export default function Login() {
             name="password"
             placeholder="Password"
           />
+          {error && <p className={classes.error}>{error}</p>}
           <button type="submit">{login ? 'Login' : 'Sign Up'}</button>
         </form>
         {login ? (

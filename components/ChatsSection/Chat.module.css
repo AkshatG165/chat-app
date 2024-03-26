@@ -1,0 +1,55 @@
+.chat {
+  display: grid;
+  grid-template-columns: 50px auto;
+  height: 55px;
+  padding: 5px;
+}
+
+.imgContainer {
+  position: relative;
+}
+
+.profilepic {
+  border-radius: 5px;
+}
+
+.dot {
+  color: #11d100;
+  background-color: white;
+  position: absolute;
+  bottom: 4%;
+  right: 14%;
+  width: 12px;
+  height: 12px;
+  border: 2px solid white;
+  border-radius: 10px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  height: 45px;
+  overflow: hidden;
+  padding-right: 5px;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  align-items: center;
+}
+
+.name {
+  font-size: small;
+  font-weight: bold;
+}
+
+.message {
+  font-size: 11px;
+}
+
+.active {
+  background-color: #d6ffd2;
+}

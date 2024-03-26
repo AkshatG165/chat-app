@@ -1,10 +1,11 @@
 import classes from './Chats.module.css';
-import Image from 'next/image';
 import profilePic from '../../public/pic.jpg';
-import Link from 'next/link';
-import { useState } from 'react';
-import { FaCircle } from 'react-icons/fa';
-import { formatDate, formatTime } from '../../util/helper';
+import { useContext, useEffect, useState } from 'react';
+import { SearchContext } from '@/store/contexts/SearchContext';
+import { User } from '@/model/User';
+import Chat from './Chat';
+import Loader from '../UI/Loader';
+import defaultUser from '../../public/defaultUser.jpg';
 
 const chats = [
   {
@@ -43,44 +44,66 @@ const chats = [
 chats.sort((a, b) => +b.message.date - +a.message.date);
 
 export default function Chats() {
+  const searchCtx = useContext(SearchContext);
   const [selectedChat, setSelectedChat] = useState(chats[0].id);
+  const [searchedUsers, setSearchedUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const chatSelectHandler = (e: React.MouseEvent) =>
-    setSelectedChat(e.currentTarget.id);
+  useEffect(() => {
+    const getUsers = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/user?name=${searchCtx.searchTerm}`);
+        if (!res.ok) {
+          const message = await res.json();
+          setError(message);
+        } else setSearchedUsers((await res.json()).result);
+      } catch (err: any) {
+        setError(err);
+      }
+      setLoading(false);
+    };
 
-  const chatsList = chats.map((chat) => (
-    <Link
-      key={chat.id}
-      id={chat.id}
-      href="#"
-      className={`${classes.chat} ${
-        chat.id === selectedChat ? classes.active : ''
-      }`}
-      onClick={chatSelectHandler}
-    >
-      <div className={classes.imgContainer}>
-        <Image
-          src={chat.profilePic}
-          alt="profile-pic"
-          height={40}
-          width={40}
-          className={classes.profilepic}
-        />
-        {chat.online && <FaCircle className={classes.dot} />}
+    if (searchCtx.searchTerm === '') setSearchedUsers([]);
+    else getUsers();
+  }, [searchCtx.searchTerm]);
+
+  const usersList = searchedUsers.map((user) => (
+    <div key={user.email} className={classes.user}>
+      <img
+        src={user.profileImg ? user.profileImg : defaultUser.src}
+        className={classes.profileImg}
+      />
+      <div>
+        <p className={classes.name}>{user.firstName + ' ' + user.lastName}</p>
+        <p className={classes.email}>{user.email}</p>
       </div>
-      <div className={classes.content}>
-        <div className={classes.title}>
-          <p className={classes.name}>{chat.name}</p>
-          <p className={classes.date}>
-            {formatDate(chat.message.date) === formatDate(new Date())
-              ? formatTime(chat.message.date)
-              : formatDate(chat.message.date)}
-          </p>
-        </div>
-        <p className={classes.message}>{chat.message.message}</p>
-      </div>
-    </Link>
+    </div>
   ));
 
-  return <div className={classes.chats}>{chatsList}</div>;
+  const chatsList = chats.map((chat) => (
+    <Chat
+      key={chat.id}
+      chat={chat}
+      selectedChat={selectedChat}
+      setSelectedChat={setSelectedChat}
+    />
+  ));
+
+  return (
+    <div className={classes.chats}>
+      {searchCtx.searchTerm ? (
+        loading ? (
+          <Loader className={classes.loader} color="black" />
+        ) : searchedUsers.length < 1 ? (
+          <p className={classes.notFound}>No Users found</p>
+        ) : (
+          <div className={classes.users}>{usersList}</div>
+        )
+      ) : (
+        chatsList
+      )}
+    </div>
+  );
 }

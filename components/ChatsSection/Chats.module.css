@@ -2,48 +2,23 @@
   margin: 10px 5px;
 }
 
-.chat {
-  display: grid;
-  grid-template-columns: 50px auto;
-  height: 55px;
+.user {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
   padding: 5px;
+}
+
+.profileImg {
+  height: 40px;
+  width: 40px;
   border-radius: 5px;
 }
 
-.imgContainer {
-  position: relative;
-}
-
-.profilepic {
-  border-radius: 5px;
-}
-
-.dot {
-  color: #11d100;
-  background-color: white;
-  position: absolute;
-  bottom: 4%;
-  right: 14%;
-  width: 12px;
-  height: 12px;
-  border: 2px solid white;
-  border-radius: 10px;
-}
-
-.content {
+.user div {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  height: 45px;
-  overflow: hidden;
-  padding-right: 5px;
-}
-
-.title {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  align-items: center;
+  gap: 5px;
 }
 
 .name {
@@ -51,11 +26,16 @@
   font-weight: bold;
 }
 
-.message {
+.email {
   font-size: 11px;
 }
 
-.active,
-.chat:hover {
-  background-color: white;
+.loader,
+.notFound {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.notFound {
+  font-size: 13px;
 }

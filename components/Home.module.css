@@ -1,5 +1,4 @@
 .card {
   height: 100vh;
-  display: grid;
-  grid-template-columns: 70px 25% auto;
+  display: flex;
 }

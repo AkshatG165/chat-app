@@ -1,4 +1,6 @@
 .card {
+  flex-basis: 70px;
+  min-width: 70px;
   padding: 10px 5px;
   display: flex;
   flex-direction: column;

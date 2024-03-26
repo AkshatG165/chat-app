@@ -1,39 +1,49 @@
 import Link from 'next/link';
-import Card from '../UI/Card';
 import classes from './Sidebar.module.css';
-import { CgProfile } from 'react-icons/cg';
-import { IoSettingsSharp } from 'react-icons/io5';
-import { BiSolidMessageDetail } from 'react-icons/bi';
-import { TiGroup } from 'react-icons/ti';
-import { MdCall } from 'react-icons/md';
+import { IoIosCall, IoIosLogOut } from 'react-icons/io';
+import { signOut, useSession } from 'next-auth/react';
+import { TbMessage } from 'react-icons/tb';
+import { HiMiniUserGroup } from 'react-icons/hi2';
+import defaultUser from '../../public/defaultUser.jpg';
 
 export default function Sidebar() {
+  const { data: session } = useSession();
+
+  const logoutHandler = async () => await signOut();
+
   return (
     <div className={classes.card}>
-      <div>
-        <Link href="#">
-          <CgProfile className={classes.icon} />
-        </Link>
-      </div>
       <div className={classes.nav}>
         <Link href="#">
-          <BiSolidMessageDetail className={classes.icon} />
+          {session?.user.image ? (
+            <img src={session.user.image} className={classes.profilImg} />
+          ) : (
+            <img src={defaultUser.src} className={classes.profilImg} />
+          )}
+          {session && <p>{session.user.firstName}</p>}
+        </Link>
+        <Link href="#">
+          <TbMessage className={classes.icon} />
           <p>Messages</p>
         </Link>
         <Link href="#">
-          <TiGroup className={classes.icon} />
+          <HiMiniUserGroup className={classes.icon} />
           <p>Groups</p>
         </Link>
         <Link href="#">
-          <MdCall className={classes.icon} />
+          <IoIosCall className={classes.icon} />
           <p>Calls</p>
         </Link>
       </div>
       <div>
-        <Link href="#">
-          <IoSettingsSharp className={classes.icon} />
-          <p>Settings</p>
-        </Link>
+        <button
+          type="button"
+          className={classes.logout}
+          onClick={logoutHandler}
+        >
+          <IoIosLogOut className={classes.icon} />
+          <p>Logout</p>
+        </button>
       </div>
     </div>
   );

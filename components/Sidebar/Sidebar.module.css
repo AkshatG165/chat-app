@@ -20,7 +20,22 @@
   margin-bottom: 5rem;
 }
 
+.profilImg {
+  height: 45px;
+  width: 45px;
+  border-radius: 5px;
+}
+
 .icon {
   height: 25px;
   width: 25px;
+}
+
+.logout {
+  border: none;
+  background-color: inherit;
+}
+
+.logout:hover {
+  cursor: pointer;
 }

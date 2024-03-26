@@ -1,5 +1,6 @@
 .card {
-  /* background-color: #efefef; */
+  flex-basis: 400px;
+  min-width: 300px;
   display: grid;
   grid-template-rows: 50px 40px auto;
   overflow: scroll;
@@ -10,9 +11,6 @@
 }
 
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   padding: 10px 15px;
 }
 

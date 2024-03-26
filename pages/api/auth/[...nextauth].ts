@@ -30,7 +30,9 @@ export const authOptions = {
           where('email', '==', credentials!.email)
         );
         const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => users.push(doc.data() as User));
+        querySnapshot.forEach((doc) =>
+          users.push({ id: doc.id, ...doc.data() } as User)
+        );
 
         //checking if email exists
         if (users.length < 1) throw new Error('User does not exist');
@@ -58,6 +60,7 @@ export const authOptions = {
       return {
         ...session,
         user: {
+          id: token.user.id,
           firstName: token.user.firstName,
           lastName: token.user.lastName,
           email: token.user.email,

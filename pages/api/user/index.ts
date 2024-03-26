@@ -74,7 +74,7 @@ export default async function handler(
       querySnapshot = await getDocs(q);
     } else querySnapshot = await getDocs(collection(db, 'users'));
 
-    querySnapshot.forEach((doc) => users.push(doc.data()));
+    querySnapshot.forEach((doc) => users.push({ id: doc.id, ...doc.data() }));
 
     if (users.length < 1)
       return res.status(201).json({

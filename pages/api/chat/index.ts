@@ -16,10 +16,10 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === 'POST') {
-    const { user1, user2 } = req.body;
+    const { user1, user2, user1Img, user2Img } = req.body;
     let chatId = '';
 
-    if (!user1 || !user2)
+    if (!user1 || !user2 || !user1Img || !user2Img)
       return res.status(422).json({ message: 'Invalid data' });
 
     //confirm that chat does not exists already
@@ -35,7 +35,7 @@ export default async function handler(
       return res.status(422).json({ message: 'Chat already exists', chatId });
 
     try {
-      const docRef = await addDoc(collection(db, 'chats'), { user1, user2 });
+      const docRef = await addDoc(collection(db, 'chats'), req.body);
       return res
         .status(201)
         .json({ message: `Chat created with ID - ${docRef.id}` });

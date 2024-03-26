@@ -54,6 +54,24 @@ export default async function handler(
         where('email', '==', req.query.email)
       );
       querySnapshot = await getDocs(q);
+    } else if (req.query.name) {
+      const q = query(
+        collection(db, 'users'),
+        where(
+          'firstName',
+          '>=',
+          (req.query.name as string).substring(0, 1).toUpperCase() +
+            (req.query.name as string).substring(1)
+        ),
+        where(
+          'firstName',
+          '<',
+          (req.query.name as string).substring(0, 1).toUpperCase() +
+            (req.query.name as string).substring(1) +
+            'z'
+        )
+      );
+      querySnapshot = await getDocs(q);
     } else querySnapshot = await getDocs(collection(db, 'users'));
 
     querySnapshot.forEach((doc) => users.push(doc.data()));

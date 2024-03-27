@@ -8,6 +8,8 @@ import {
   where,
   DocumentData,
   or,
+  deleteDoc,
+  doc,
 } from 'firebase/firestore';
 
 export default async function handler(
@@ -62,6 +64,13 @@ export default async function handler(
       message: `Chats fetched successfully!`,
       result: chats,
     });
+  } else if (req.method === 'DELETE') {
+    if (!req.query.chatId)
+      return res.status(400).json({ message: `Chat Id is required` });
+
+    await deleteDoc(doc(db, 'chats', req.query.chatId as string));
+
+    return res.status(201).json({ message: `Chat deleted successfully!` });
   } else {
     return res
       .status(405)

@@ -56,7 +56,7 @@ export default async function handler(
         where('user2', '==', req.query.userId)
       )
     );
-    const querySnapshot = await getDocs(collection(db, 'users'));
+    const querySnapshot = await getDocs(q);
 
     querySnapshot.forEach((doc) => chats.push({ id: doc.id, ...doc.data() }));
 

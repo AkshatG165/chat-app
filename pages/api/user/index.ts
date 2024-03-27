@@ -84,7 +84,7 @@ export default async function handler(
 
     return res.status(201).json({
       message: `${req.query.email ? 'User' : 'Users'} fetched successfully!`,
-      result: users,
+      result: users.sort((a, b) => a.firstName.localeCompare(b.firstName)),
     });
   } else {
     return res

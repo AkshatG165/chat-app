@@ -41,9 +41,7 @@ export default async function handler(
     } catch (e) {
       return res.status(500).json({ message: `Unable to create chat - ${e}` });
     }
-  }
-  //for getting users by email - ?email=emailAddress & skip email query parameter to get all users
-  else if (req.method === 'GET') {
+  } else if (req.method === 'GET') {
     let chats: DocumentData[] = [];
 
     if (!req.query.userId)

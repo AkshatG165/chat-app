@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import classes from './Search.module.css';
 import { GoSearch } from 'react-icons/go';
 import { SearchContext } from '@/store/contexts/SearchContext';
@@ -19,6 +19,7 @@ export default function Search() {
           name="search"
           placeholder="Search for users"
           onChange={inputHandler}
+          value={searchCtx.searchTerm}
         />
       </div>
     </div>

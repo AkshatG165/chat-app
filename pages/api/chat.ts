@@ -1,12 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { db } from '../../../util/firebase';
+import { db } from '../../util/firebase';
 import {
   collection,
   addDoc,
   getDocs,
   query,
   where,
-  QuerySnapshot,
   DocumentData,
   or,
 } from 'firebase/firestore';
@@ -19,7 +18,7 @@ export default async function handler(
     const { user1, user2, user1Img, user2Img } = req.body;
     let chatId = '';
 
-    if (!user1 || !user2 || !user1Img || !user2Img)
+    if (!user1 || !user2)
       return res.status(422).json({ message: 'Invalid data' });
 
     //confirm that chat does not exists already

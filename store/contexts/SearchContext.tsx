@@ -1,7 +1,7 @@
 import { createContext, useState } from 'react';
 
 type Context = {
-  searchTerm: string | null;
+  searchTerm: string;
   setSearchTerm: (input: string) => void;
 };
 
@@ -10,12 +10,12 @@ type Props = {
 };
 
 export const SearchContext = createContext<Context>({
-  searchTerm: null,
+  searchTerm: '',
   setSearchTerm: (input: string) => {},
 });
 
 export default function SearchContextProvider({ children }: Props) {
-  const [searchTerm, setSearchTerm] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   const setInput = (input: string) => setSearchTerm(input);
 

@@ -39,7 +39,7 @@ export default async function handler(
       const docRef = await addDoc(collection(db, 'chats'), req.body);
       return res
         .status(201)
-        .json({ message: `Chat created with ID - ${docRef.id}` });
+        .json({ message: `Chat created successfully`, result: docRef.id });
     } catch (e) {
       return res.status(500).json({ message: `Unable to create chat - ${e}` });
     }

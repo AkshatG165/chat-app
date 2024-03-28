@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react';
 import classes from './Search.module.css';
 import { GoSearch } from 'react-icons/go';
-import { SearchContext } from '@/store/contexts/SearchContext';
+import { SearchContext } from '@/store/SearchContext';
 
 export default function Search() {
   const searchCtx = useContext(SearchContext);

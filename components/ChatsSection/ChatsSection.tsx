@@ -2,7 +2,7 @@ import classes from './ChatsSection.module.css';
 import Card from '../UI/Card';
 import Search from './Search';
 import Chats from './Chats';
-import SearchContextProvider from '@/store/contexts/SearchContext';
+import SearchContextProvider from '@/store/SearchContext';
 
 export default function ChatsSection() {
   return (

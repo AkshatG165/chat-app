@@ -1,28 +1,26 @@
 import Link from 'next/link';
 import classes from './Chat.module.css';
-import Image from 'next/image';
 import { FaCircle } from 'react-icons/fa';
 import { formatDate, formatTime } from '@/util/helper';
-import { StaticImport } from 'next/dist/shared/lib/get-img-props';
-
-type Chat = {
-  id: string;
-  name: string;
-  profilePic: StaticImport;
-  online: boolean;
-  message: {
-    message: string;
-    date: Date;
-  };
-};
+import { Chat as ChatModel } from '@/model/Chat';
+import { useSession } from 'next-auth/react';
+import { Message } from '@/model/Message';
 
 type Props = {
-  chat: Chat;
+  chat: ChatModel;
   selectedChat: string;
   setSelectedChat: React.Dispatch<React.SetStateAction<string>>;
+  message?: Message;
 };
 
-export default function Chat({ chat, selectedChat, setSelectedChat }: Props) {
+export default function Chat({
+  chat,
+  selectedChat,
+  setSelectedChat,
+  message,
+}: Props) {
+  const { data: session } = useSession();
+
   const chatSelectHandler = (e: React.MouseEvent) =>
     setSelectedChat(e.currentTarget.id);
 
@@ -37,25 +35,29 @@ export default function Chat({ chat, selectedChat, setSelectedChat }: Props) {
       onClick={chatSelectHandler}
     >
       <div className={classes.imgContainer}>
-        <Image
-          src={chat.profilePic}
+        <img
+          src={session?.user.id === chat.user1 ? chat.user2Img : chat.user1Img}
           alt="profile-pic"
           height={40}
           width={40}
           className={classes.profilepic}
         />
-        {chat.online && <FaCircle className={classes.dot} />}
+        {/* {chat.online && <FaCircle className={classes.dot} />} */}
       </div>
       <div className={classes.content}>
         <div className={classes.title}>
-          <p className={classes.name}>{chat.name}</p>
-          <p className={classes.date}>
-            {formatDate(chat.message.date) === formatDate(new Date())
-              ? formatTime(chat.message.date)
-              : formatDate(chat.message.date)}
+          <p className={classes.name}>
+            {session?.user.id === chat.user1 ? chat.user2Name : chat.user1Name}
           </p>
+          {message && (
+            <p className={classes.date}>
+              {formatDate(message.date) === formatDate(Date.now())
+                ? formatTime(message.date)
+                : formatDate(message.date)}
+            </p>
+          )}
         </div>
-        <p className={classes.message}>{chat.message.message}</p>
+        {message && <p className={classes.message}>{message.message}</p>}
       </div>
     </Link>
   );

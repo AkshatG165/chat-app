@@ -17,10 +17,10 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === 'POST') {
-    const { user1, user2, user1Img, user2Img } = req.body;
+    const { user1, user1Name, user2, user2Name } = req.body;
     let chatId = '';
 
-    if (!user1 || !user2)
+    if (!user1 || !user1Name || !user2 || !user2Name)
       return res.status(422).json({ message: 'Invalid data' });
 
     //confirm that chat does not exists already

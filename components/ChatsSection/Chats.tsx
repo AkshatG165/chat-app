@@ -6,30 +6,48 @@ import Chat from './Chat';
 import Loader from '../UI/Loader';
 import defaultUser from '../../public/defaultUser.jpg';
 import { useSession } from 'next-auth/react';
+import { ChatContext } from '@/store/ChatContext/ChatContext';
 import { Chat as ChatModel } from '@/model/Chat';
+
+let isInitial = true;
 
 export default function Chats() {
   const searchCtx = useContext(SearchContext);
-  const [chats, setChats] = useState<ChatModel[]>([]);
   const [selectedChat, setSelectedChat] = useState('');
   const [searchedUsers, setSearchedUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { data: session } = useSession();
+  const chatCtx = useContext(ChatContext);
 
   useEffect(() => {
     const getChats = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/chat?userId=${session?.user.id}`);
-        if (!res.ok) setError(await res.json());
-        else setChats((await res.json()).result);
+        const resChat = await fetch(`/api/chat?userId=${session?.user.id}`);
+        const chat = await resChat.json();
+        if (!resChat.ok) setError(chat);
+
+        (chat.result as ChatModel[]).forEach(async (chat) => {
+          const resMessages = await fetch(
+            `/api/message?chatId=${chat.id}&count=1`
+          );
+          const message = await resMessages.json();
+          if (!resMessages.ok) setError(message);
+
+          chatCtx.setChats((prev) =>
+            prev
+              ? [...prev, { chat, message: message.result[0] }]
+              : [{ chat, message: message.result[0] }]
+          );
+        });
       } catch (err: any) {
         setError(err);
       }
       setLoading(false);
     };
-    getChats();
+    if (!isInitial) getChats();
+    else isInitial = false;
   }, []);
 
   useEffect(() => {
@@ -93,12 +111,13 @@ export default function Chats() {
     </div>
   ));
 
-  const chatsList = chats.map((chat) => (
+  const chatsList = chatCtx.chats?.map((chat) => (
     <Chat
-      key={chat.id}
-      chat={chat}
+      key={chat.chat.id}
+      chat={chat.chat}
       selectedChat={selectedChat}
       setSelectedChat={setSelectedChat}
+      message={chat.message}
     />
   ));
 

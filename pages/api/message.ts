@@ -1,11 +1,20 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { db } from '../../util/firebase';
-import { collection, addDoc, getDocs, DocumentData } from 'firebase/firestore';
+import {
+  collection,
+  addDoc,
+  getDocs,
+  DocumentData,
+  query,
+  orderBy,
+  limit,
+} from 'firebase/firestore';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  //POST request
   if (req.method === 'POST') {
     const { chatId, date, from, message } = req.body;
 
@@ -26,15 +35,24 @@ export default async function handler(
         .status(500)
         .json({ message: `Unable to insert message - ${e}` });
     }
-  } else if (req.method === 'GET') {
+  }
+
+  //GET request
+  else if (req.method === 'GET') {
     let messages: DocumentData[] = [];
 
     if (!req.query.chatId)
       return res.status(400).json({ message: `Chat Id is required` });
 
-    const querySnapshot = await getDocs(
-      collection(db, 'chats', req.query.chatId as string, 'messages')
-    );
+    const q = req.query.count
+      ? query(
+          collection(db, 'chats', req.query.chatId as string, 'messages'),
+          orderBy('date', 'desc'),
+          limit(+req.query.count)
+        )
+      : query(collection(db, 'chats', req.query.chatId as string, 'messages'));
+
+    const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) =>
       messages.push({ id: doc.id, ...doc.data() })
     );
@@ -43,7 +61,10 @@ export default async function handler(
       message: `Messages fetched successfully!`,
       result: messages,
     });
-  } else {
+  }
+
+  //Anything else
+  else {
     return res
       .status(405)
       .json({ message: `${req.method} method not supported` });

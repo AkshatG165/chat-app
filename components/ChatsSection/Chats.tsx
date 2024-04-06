@@ -22,10 +22,8 @@ export default function Chats() {
       setLoading(true);
       try {
         const res = await fetch(`/api/chat?userId=${session?.user.id}`);
-        if (!res.ok) {
-          const message = await res.json();
-          setError(message);
-        } else setChats((await res.json()).result);
+        if (!res.ok) setError(await res.json());
+        else setChats((await res.json()).result);
       } catch (err: any) {
         setError(err);
       }
@@ -39,10 +37,8 @@ export default function Chats() {
       setLoading(true);
       try {
         const res = await fetch(`/api/user?name=${searchCtx.searchTerm}`);
-        if (!res.ok) {
-          const message = await res.json();
-          setError(message);
-        } else setSearchedUsers((await res.json()).result);
+        if (!res.ok) setError(await res.json());
+        else setSearchedUsers((await res.json()).result);
       } catch (err: any) {
         setError(err);
       }

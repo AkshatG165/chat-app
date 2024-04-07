@@ -4,10 +4,17 @@ import { CgAttachment } from 'react-icons/cg';
 import { FaMicrophone } from 'react-icons/fa';
 import { useEffect, useRef, useState } from 'react';
 import { MdPhoto } from 'react-icons/md';
+import { Message } from '@/model/Message';
+import { useSession } from 'next-auth/react';
 
-export default function Input() {
+type Props = {
+  setMessages: React.Dispatch<React.SetStateAction<Message[] | undefined>>;
+};
+
+export default function Input({ setMessages }: Props) {
   const [val, setVal] = useState('');
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+  const { data: session } = useSession();
 
   const resizeTextArea = () => {
     if (!textAreaRef.current) return;
@@ -17,8 +24,23 @@ export default function Input() {
 
   useEffect(resizeTextArea, [val]);
 
-  const onChangeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const onChangeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
     setVal(e.target.value);
+
+  const enterHandler = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+
+      const message = new Message(
+        Date.now().toString(),
+        Date.now(),
+        session?.user.id!,
+        e.currentTarget.value
+      );
+
+      setMessages((prev) => (prev ? [...prev, message] : [message]));
+      setVal('');
+    }
   };
 
   return (
@@ -32,6 +54,7 @@ export default function Input() {
         ref={textAreaRef}
         value={val}
         onChange={onChangeHandler}
+        onKeyDown={enterHandler}
       />
       <div className={classes.icons}>
         <CgAttachment className={classes.icon} />

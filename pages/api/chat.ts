@@ -16,6 +16,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  //POST request
   if (req.method === 'POST') {
     const { user1, user1Name, user2, user2Name } = req.body;
     let chatId = '';
@@ -43,7 +44,10 @@ export default async function handler(
     } catch (e) {
       return res.status(500).json({ message: `Unable to create chat - ${e}` });
     }
-  } else if (req.method === 'GET') {
+  }
+
+  //GET request
+  else if (req.method === 'GET') {
     let chats: DocumentData[] = [];
 
     if (!req.query.userId)
@@ -64,14 +68,19 @@ export default async function handler(
       message: `Chats fetched successfully!`,
       result: chats,
     });
-  } else if (req.method === 'DELETE') {
+  }
+
+  //DELETE request
+  else if (req.method === 'DELETE') {
     if (!req.query.chatId)
       return res.status(400).json({ message: `Chat Id is required` });
 
     await deleteDoc(doc(db, 'chats', req.query.chatId as string));
-
     return res.status(201).json({ message: `Chat deleted successfully!` });
-  } else {
+  }
+
+  //Anything else
+  else {
     return res
       .status(405)
       .json({ message: `${req.method} method not supported` });

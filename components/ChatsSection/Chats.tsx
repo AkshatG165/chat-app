@@ -12,7 +12,7 @@ import { useRouter } from 'next/router';
 
 type State = {
   chat: ChatModel;
-  message: Message;
+  message?: Message;
 };
 
 let isInitial = true;
@@ -42,11 +42,15 @@ export default function Chats() {
           const message = await resMessages.json();
           if (!resMessages.ok) setError(message);
 
-          setChats((prev) =>
-            prev
-              ? [...prev, { chat, message: message.result[0] }]
-              : [{ chat, message: message.result[0] }]
-          );
+          (message.result as Message[]).length > 0
+            ? setChats((prev) =>
+                prev
+                  ? [...prev, { chat, message: message.result[0] }]
+                  : [{ chat, message: message.result[0] }]
+              )
+            : await fetch(`/api/chat?chatId=${chat.id}`, {
+                method: 'DELETE',
+              });
         });
       } catch (err: any) {
         setError(err);
@@ -76,11 +80,12 @@ export default function Chats() {
 
   const selectUserHandler = async (e: React.MouseEvent<HTMLDivElement>) => {
     const data = {
-      user1: session?.user.id,
-      user1Name: session?.user.firstName + ' ' + session?.user.lastName,
-      user1Img: session?.user.image,
-      user2: e.currentTarget.id,
-      user2Name: e.currentTarget.lastElementChild?.firstElementChild?.innerHTML,
+      user1: session?.user.id!,
+      user1Name: session?.user.firstName! + ' ' + session?.user.lastName!,
+      user1Img: session?.user.image!,
+      user2: e.currentTarget.id!,
+      user2Name:
+        e.currentTarget.lastElementChild?.firstElementChild?.innerHTML!,
       user2Img: (e.currentTarget.firstElementChild as HTMLImageElement).src,
     };
     const res = await fetch('/api/chat', {
@@ -96,7 +101,14 @@ export default function Chats() {
       const chatId = (await res.json()).result;
       setSearchedUsers([]);
       searchCtx.setSearchTerm('');
-      router.query.chatId = chatId;
+
+      const returnedChat = { id: chatId as string, ...data };
+      setChats((prev) =>
+        prev
+          ? [{ chat: returnedChat, message: undefined }, ...prev]
+          : [{ chat: returnedChat, message: undefined }]
+      );
+      router.replace(`?chatId=${chatId}`);
     }
   };
 
@@ -119,10 +131,10 @@ export default function Chats() {
   ));
 
   const chatsList = chats
-    ?.filter((chat) => {
-      if (chat.message) return chat;
+    ?.sort((a, b) => {
+      if (a.message && b.message) return +b.message.date - +a.message.date;
+      else return 0;
     })
-    .sort((a, b) => +b.message.date - +a.message.date)
     .map((chat) => (
       <Chat key={chat.chat.id} chat={chat.chat} message={chat.message} />
     ));

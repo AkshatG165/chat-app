@@ -1,4 +1,5 @@
 .container {
+  flex: 1 1 auto;
   margin: 10px 0;
   padding: 5px;
   overflow: scroll;

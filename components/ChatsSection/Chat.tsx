@@ -5,34 +5,25 @@ import { formatDate, formatTime } from '@/util/helper';
 import { Chat as ChatModel } from '@/model/Chat';
 import { useSession } from 'next-auth/react';
 import { Message } from '@/model/Message';
+import { useRouter } from 'next/router';
 
 type Props = {
   chat: ChatModel;
-  selectedChat: string;
-  setSelectedChat: React.Dispatch<React.SetStateAction<string>>;
   message?: Message;
 };
 
-export default function Chat({
-  chat,
-  selectedChat,
-  setSelectedChat,
-  message,
-}: Props) {
+export default function Chat({ chat, message }: Props) {
   const { data: session } = useSession();
-
-  const chatSelectHandler = (e: React.MouseEvent) =>
-    setSelectedChat(e.currentTarget.id);
+  const router = useRouter();
 
   return (
     <Link
       key={chat.id}
       id={chat.id}
-      href="#"
+      href={`?chatId=${chat.id}`}
       className={`${classes.chat} ${
-        chat.id === selectedChat ? classes.active : ''
+        chat.id === router.query.chatId ? classes.active : ''
       }`}
-      onClick={chatSelectHandler}
     >
       <div className={classes.imgContainer}>
         <img

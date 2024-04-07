@@ -6,19 +6,26 @@ import Chat from './Chat';
 import Loader from '../UI/Loader';
 import defaultUser from '../../public/defaultUser.jpg';
 import { useSession } from 'next-auth/react';
-import { ChatContext } from '@/store/ChatContext/ChatContext';
 import { Chat as ChatModel } from '@/model/Chat';
+import { Message } from '@/model/Message';
+import { useRouter } from 'next/router';
+
+type State = {
+  chat: ChatModel;
+  message: Message;
+};
 
 let isInitial = true;
 
 export default function Chats() {
-  const searchCtx = useContext(SearchContext);
-  const [selectedChat, setSelectedChat] = useState('');
   const [searchedUsers, setSearchedUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [chats, setChats] = useState<State[]>();
+
+  const searchCtx = useContext(SearchContext);
   const { data: session } = useSession();
-  const chatCtx = useContext(ChatContext);
+  const router = useRouter();
 
   useEffect(() => {
     const getChats = async () => {
@@ -35,7 +42,7 @@ export default function Chats() {
           const message = await resMessages.json();
           if (!resMessages.ok) setError(message);
 
-          chatCtx.setChats((prev) =>
+          setChats((prev) =>
             prev
               ? [...prev, { chat, message: message.result[0] }]
               : [{ chat, message: message.result[0] }]
@@ -89,7 +96,7 @@ export default function Chats() {
       const chatId = (await res.json()).result;
       setSearchedUsers([]);
       searchCtx.setSearchTerm('');
-      setSelectedChat(chatId);
+      router.query.chatId = chatId;
     }
   };
 
@@ -111,15 +118,14 @@ export default function Chats() {
     </div>
   ));
 
-  const chatsList = chatCtx.chats?.map((chat) => (
-    <Chat
-      key={chat.chat.id}
-      chat={chat.chat}
-      selectedChat={selectedChat}
-      setSelectedChat={setSelectedChat}
-      message={chat.message}
-    />
-  ));
+  const chatsList = chats
+    ?.filter((chat) => {
+      if (chat.message) return chat;
+    })
+    .sort((a, b) => +b.message.date - +a.message.date)
+    .map((chat) => (
+      <Chat key={chat.chat.id} chat={chat.chat} message={chat.message} />
+    ));
 
   return (
     <div className={classes.chats}>
@@ -137,39 +143,3 @@ export default function Chats() {
     </div>
   );
 }
-
-// const chats = [
-//   {
-//     id: '1',
-//     name: 'Akshat Gupta',
-//     profilePic,
-//     online: true,
-//     message: {
-//       message: 'Hi, How are u? This is a dummy message.',
-//       date: new Date(2024, 2, 19, 15, 15),
-//     },
-//   },
-//   {
-//     id: '2',
-//     name: 'Akshat Gupta',
-//     profilePic,
-//     online: false,
-//     message: {
-//       message:
-//         'Hi, How are u? This is a dummy message.Hi, How are u? This is a dummy message.Hi, How are u? This is a dummy message.',
-//       date: new Date(2024, 2, 18, 17, 15),
-//     },
-//   },
-//   {
-//     id: '3',
-//     name: 'Akshat Gupta',
-//     profilePic,
-//     online: true,
-//     message: {
-//       message: 'Hi, How are u? This is a dummy message.',
-//       date: new Date(2024, 2, 19, 16, 20),
-//     },
-//   },
-// ];
-
-//chats.sort((a, b) => +b.message.date - +a.message.date);

@@ -1,166 +1,32 @@
-import Image from 'next/image';
 import classes from './Messages.module.css';
-import profilePic from '../../public/pic.jpg';
 import { formatTime } from '../../util/helper';
+import { Message } from '@/model/Message';
+import { useContext } from 'react';
+import { ChatContext } from '@/store/ChatContext';
+import { useSession } from 'next-auth/react';
 
-const chat = {
-  profilePic,
-  messages: [
-    {
-      id: '1',
-      date: new Date(2023, 2, 21, 12, 55),
-      from: 'akshat',
-      to: 'me',
-      message: 'Hi, This is a dummy message',
-    },
-    {
-      id: '20',
-      date: new Date(2023, 2, 21, 12, 55),
-      from: 'me',
-      to: 'akshat',
-      message: 'Hi, This is a dummy message',
-    },
-    {
-      id: '2',
-      date: new Date(2023, 2, 21, 12, 55),
-      from: 'me',
-      to: 'akshat',
-      message:
-        'Hi, This is a dummy message Hi, This is a dummy message Hi, This is a dummy message Hi, This is a dummy message is a dummy message Hi, This is a dummy message Hi, This is a dummy message ',
-    },
-    {
-      id: '3',
-      date: new Date(2023, 2, 21, 12, 55),
-      from: 'akshat',
-      to: 'me',
-      message: 'Hi, This is a dummy message',
-    },
-    {
-      id: '4',
-      date: new Date(2023, 2, 21, 12, 55),
-      from: 'me',
-      to: 'akshat',
-      message: 'Hi, This is a dummy message',
-    },
-    {
-      id: '5',
-      date: new Date(2023, 2, 21, 12, 55),
-      from: 'me',
-      to: 'akshat',
-      message: 'Hi, This is a dummy message',
-    },
-    {
-      id: '6',
-      date: new Date(2023, 2, 21, 12, 55),
-      from: 'akshat',
-      to: 'me',
-      message: 'Hi, This is a dummy message',
-    },
-    {
-      id: '7',
-      date: new Date(2023, 2, 21, 12, 55),
-      from: 'me',
-      to: 'akshat',
-      message: 'Hi, This is a dummy message',
-    },
-    {
-      id: '8',
-      date: new Date(2023, 2, 21, 12, 55),
-      from: 'me',
-      to: 'akshat',
-      message: 'Hi, This is a dummy message',
-    },
-    {
-      id: '9',
-      date: new Date(2023, 2, 21, 12, 55),
-      from: 'me',
-      to: 'akshat',
-      message: 'Hi, This is a dummy message',
-    },
-    {
-      id: '10',
-      date: new Date(2023, 2, 21, 12, 55),
-      from: 'akshat',
-      to: 'me',
-      message: 'Hi, This is a dummy message',
-    },
-    {
-      id: '11',
-      date: new Date(2023, 2, 21, 12, 55),
-      from: 'me',
-      to: 'akshat',
-      message: 'Hi, This is a dummy message',
-    },
-    {
-      id: '12',
-      date: new Date(2023, 2, 21, 12, 55),
-      from: 'akshat',
-      to: 'me',
-      message: 'Hi, This is a dummy message',
-    },
-    {
-      id: '13',
-      date: new Date(2023, 2, 21, 12, 55),
-      from: 'me',
-      to: 'akshat',
-      message: 'Hi, This is a dummy message',
-    },
-    {
-      id: '14',
-      date: new Date(2023, 2, 21, 12, 55),
-      from: 'akshat',
-      to: 'me',
-      message: 'Hi, This is a dummy message',
-    },
-    {
-      id: '15',
-      date: new Date(2023, 2, 21, 12, 55),
-      from: 'akshat',
-      to: 'me',
-      message: 'Hi, This is a dummy message',
-    },
-    {
-      id: '16',
-      date: new Date(2023, 2, 21, 12, 55),
-      from: 'me',
-      to: 'akshat',
-      message: 'Hi, This is a dummy message',
-    },
-    {
-      id: '17',
-      date: new Date(2023, 2, 21, 12, 55),
-      from: 'akshat',
-      to: 'me',
-      message: 'Hi, This is a dummy message',
-    },
-    {
-      id: '18',
-      date: new Date(2023, 2, 21, 12, 55),
-      from: 'me',
-      to: 'akshat',
-      message: 'Hi, This is a dummy message',
-    },
-    {
-      id: '19',
-      date: new Date(2023, 2, 21, 12, 55),
-      from: 'akshat',
-      to: 'me',
-      message: 'Hi, This is a dummy message',
-    },
-  ],
+type Props = {
+  messages: Message[] | undefined;
 };
 
-export default function Messages() {
-  const messagesList = chat.messages.map((message) => (
+export default function Messages({ messages }: Props) {
+  const chatCtx = useContext(ChatContext);
+  const { data: session } = useSession();
+
+  const messagesList = messages?.map((message) => (
     <div
       key={message.id}
       className={`${classes.msgContainer} ${
-        message.from === 'me' ? classes.rightMsgContainer : ''
+        message.from === session?.user.id ? classes.rightMsgContainer : ''
       }`}
     >
-      {message.from !== 'me' && (
-        <Image
-          src={chat.profilePic}
+      {message.from !== session?.user.id && (
+        <img
+          src={
+            session?.user.id === chatCtx.selectedChat?.user1
+              ? chatCtx.selectedChat?.user2Img
+              : chatCtx.selectedChat?.user1Img
+          }
           alt="profile-pic"
           height={40}
           width={40}
@@ -169,7 +35,7 @@ export default function Messages() {
       )}
       <div
         className={`${classes.message} ${
-          message.from === 'me' ? classes.rightMessage : ''
+          message.from === session?.user.id ? classes.rightMessage : ''
         }`}
       >
         <p className={classes.text}>{message.message}</p>

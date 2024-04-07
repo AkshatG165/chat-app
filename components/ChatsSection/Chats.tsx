@@ -8,7 +8,7 @@ import defaultUser from '../../public/defaultUser.jpg';
 import { useSession } from 'next-auth/react';
 import { Chat as ChatModel } from '@/model/Chat';
 import { Message } from '@/model/Message';
-import { useRouter } from 'next/router';
+import { ChatContext } from '@/store/ChatContext';
 
 type State = {
   chat: ChatModel;
@@ -23,9 +23,9 @@ export default function Chats() {
   const [error, setError] = useState<string | null>(null);
   const [chats, setChats] = useState<State[]>();
 
-  const searchCtx = useContext(SearchContext);
   const { data: session } = useSession();
-  const router = useRouter();
+  const searchCtx = useContext(SearchContext);
+  const chatCtx = useContext(ChatContext);
 
   useEffect(() => {
     const getChats = async () => {
@@ -108,7 +108,7 @@ export default function Chats() {
           ? [{ chat: returnedChat, message: undefined }, ...prev]
           : [{ chat: returnedChat, message: undefined }]
       );
-      router.replace(`?chatId=${chatId}`);
+      chatCtx.setSelectedChat(returnedChat);
     }
   };
 

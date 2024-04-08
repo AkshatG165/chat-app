@@ -44,13 +44,17 @@ export default async function handler(
     if (!req.query.chatId)
       return res.status(400).json({ message: `Chat Id is required` });
 
-    const q = req.query.count
-      ? query(
-          collection(db, 'chats', req.query.chatId as string, 'messages'),
-          orderBy('date', 'desc'),
-          limit(+req.query.count)
-        )
-      : query(collection(db, 'chats', req.query.chatId as string, 'messages'));
+    const q =
+      +req.query.count! === 1
+        ? query(
+            collection(db, 'chats', req.query.chatId as string, 'messages'),
+            orderBy('date', 'desc'),
+            limit(+req.query.count!)
+          )
+        : query(
+            collection(db, 'chats', req.query.chatId as string, 'messages'),
+            orderBy('date')
+          );
 
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) =>

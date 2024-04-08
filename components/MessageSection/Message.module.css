@@ -1,0 +1,53 @@
+.msgContainer {
+  width: fit-content;
+  max-width: 80%;
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.rightMsgContainer {
+  position: relative;
+  flex-direction: row-reverse;
+  align-self: flex-end;
+}
+
+.profilepic {
+  border-radius: 5px;
+}
+
+.message {
+  display: flex;
+  background-color: white;
+  padding: 5px 10px;
+  border-radius: 0 15px 15px 15px;
+  height: fit-content;
+  max-width: 100%;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.rightMessage {
+  background-color: #e3edfa;
+  border-radius: 15px 15px 0 15px;
+  justify-content: flex-end;
+}
+
+.text {
+  font-size: 13px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex: auto;
+  white-space: pre-wrap;
+}
+
+.date {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  font-size: 11px;
+  min-height: 16px;
+  min-width: 52px;
+  flex: auto;
+}

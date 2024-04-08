@@ -31,6 +31,9 @@ export default function Input({ setMessages }: Props) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
 
+      if (!e.currentTarget.value || e.currentTarget.value.trim().length === 0)
+        return;
+
       const message = {
         id: Date.now().toString(),
         date: Date.now(),

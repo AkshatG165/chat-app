@@ -31,12 +31,12 @@ export default function Input({ setMessages }: Props) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
 
-      const message = new Message(
-        Date.now().toString(),
-        Date.now(),
-        session?.user.id!,
-        e.currentTarget.value
-      );
+      const message = {
+        id: Date.now().toString(),
+        date: Date.now(),
+        from: session?.user.id!,
+        message: e.currentTarget.value,
+      };
 
       setMessages((prev) => (prev ? [...prev, message] : [message]));
       setVal('');

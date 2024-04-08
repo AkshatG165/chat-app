@@ -9,13 +9,12 @@ import { useSession } from 'next-auth/react';
 import { Chat as ChatModel } from '@/model/Chat';
 import { Message } from '@/model/Message';
 import { ChatContext } from '@/store/ChatContext';
+import Image from 'next/image';
 
 type State = {
   chat: ChatModel;
   message?: Message;
 };
-
-let isInitial = true;
 
 export default function Chats() {
   const [searchedUsers, setSearchedUsers] = useState<User[]>([]);
@@ -28,10 +27,16 @@ export default function Chats() {
   const chatCtx = useContext(ChatContext);
 
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     const getChats = async () => {
       setLoading(true);
+
       try {
-        const resChat = await fetch(`/api/chat?userId=${session?.user.id}`);
+        const resChat = await fetch(`/api/chat?userId=${session?.user.id}`, {
+          signal: signal,
+        });
         const chat = await resChat.json();
         if (!resChat.ok) setError(chat);
 
@@ -57,9 +62,13 @@ export default function Chats() {
       }
       setLoading(false);
     };
-    if (!isInitial) getChats();
-    else isInitial = false;
-  }, []);
+
+    getChats();
+
+    return () => {
+      controller.abort();
+    };
+  }, [session?.user.id]);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -119,8 +128,11 @@ export default function Chats() {
       className={classes.user}
       onClick={selectUserHandler}
     >
-      <img
+      <Image
         src={user.profileImg ? user.profileImg : defaultUser.src}
+        alt="profile-img"
+        width={40}
+        height={40}
         className={classes.profileImg}
       />
       <div>

@@ -7,6 +7,7 @@ import { useSession } from 'next-auth/react';
 import { Message } from '@/model/Message';
 import { useContext } from 'react';
 import { ChatContext } from '@/store/ChatContext';
+import Image from 'next/image';
 
 type Props = {
   chat: ChatModel;
@@ -30,7 +31,7 @@ export default function Chat({ chat, message }: Props) {
       onClick={handleChatSelect}
     >
       <div className={classes.imgContainer}>
-        <img
+        <Image
           src={session?.user.id === chat.user1 ? chat.user2Img : chat.user1Img}
           alt="profile-pic"
           height={40}

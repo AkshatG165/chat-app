@@ -8,11 +8,7 @@ import { LuClock3 } from 'react-icons/lu';
 import { TiTick } from 'react-icons/ti';
 import Image from 'next/image';
 
-type Props = {
-  message: MessageModel;
-};
-
-export default function Message({ message }: Props) {
+export default function Message({ message }: { message: MessageModel }) {
   const { data: session } = useSession();
   const chatCtx = useContext(ChatContext);
   const [loading, setLoading] = useState(false);
@@ -31,7 +27,7 @@ export default function Message({ message }: Props) {
     };
 
     const sendMessages = async () => {
-      setLoading(true);
+      setLoading((prev) => !prev);
       try {
         const res = await fetch(`/api/message`, {
           method: 'POST',
@@ -46,7 +42,7 @@ export default function Message({ message }: Props) {
       } catch (err: any) {
         setError(err);
       }
-      setLoading(false);
+      setLoading((prev) => !prev);
     };
 
     if (!isNaN(+message.id)) sendMessages();

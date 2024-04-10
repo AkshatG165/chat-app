@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { useContext } from 'react';
 import { ChatContext } from '@/store/ChatContext';
 import { useSession } from 'next-auth/react';
+import Image from 'next/image';
+import defaultUser from '../../public/defaultUser.jpg';
 
 export default function Header() {
   const { data: session } = useSession();
@@ -13,8 +15,8 @@ export default function Header() {
 
   const img =
     session?.user.id === chatCtx.selectedChat?.user1
-      ? chatCtx.selectedChat?.user2Img
-      : chatCtx.selectedChat?.user1Img;
+      ? chatCtx.selectedChat?.user2Img || defaultUser
+      : chatCtx.selectedChat?.user1Img || defaultUser;
   const name =
     session?.user.id === chatCtx.selectedChat?.user1
       ? chatCtx.selectedChat?.user2Name
@@ -23,7 +25,7 @@ export default function Header() {
   return (
     <div className={classes.header}>
       <div className={classes.left}>
-        <img
+        <Image
           src={img}
           alt="profile-pic"
           height={50}

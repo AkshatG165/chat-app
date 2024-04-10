@@ -7,6 +7,7 @@ import { formatTime } from '@/util/helper';
 import { LuClock3 } from 'react-icons/lu';
 import Image from 'next/image';
 import { BiCheckDouble } from 'react-icons/bi';
+import defaultUser from '../../public/defaultUser.jpg';
 
 type Props = { message: MessageModel; prevMessage: MessageModel };
 
@@ -93,8 +94,8 @@ export default function Message({ message, prevMessage }: Props) {
             <Image
               src={
                 session?.user.id === chatCtx.selectedChat?.user1
-                  ? chatCtx.selectedChat?.user2Img || ''
-                  : chatCtx.selectedChat?.user1Img || ''
+                  ? chatCtx.selectedChat?.user2Img || defaultUser
+                  : chatCtx.selectedChat?.user1Img || defaultUser
               }
               alt="profile-pic"
               height={40}

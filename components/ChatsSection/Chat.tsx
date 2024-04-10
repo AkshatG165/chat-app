@@ -7,6 +7,7 @@ import { useSession } from 'next-auth/react';
 import { useContext } from 'react';
 import { ChatContext } from '@/store/ChatContext';
 import Image from 'next/image';
+import defaultUser from '../../public/defaultUser.jpg';
 
 export default function Chat({ chat }: { chat: ChatModel }) {
   const { data: session } = useSession();
@@ -26,7 +27,11 @@ export default function Chat({ chat }: { chat: ChatModel }) {
     >
       <div className={classes.imgContainer}>
         <Image
-          src={session?.user.id === chat.user1 ? chat.user2Img : chat.user1Img}
+          src={
+            session?.user.id === chat.user1
+              ? chat.user2Img || defaultUser
+              : chat.user1Img || defaultUser
+          }
           alt="profile-pic"
           height={40}
           width={40}

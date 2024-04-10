@@ -1,37 +1,51 @@
 import classes from './MessageSection.module.css';
+import { useContext, useEffect, useState } from 'react';
 import Header from './Header';
 import Input from './Input';
 import Messages from './Messages';
-import { useContext, useEffect, useState } from 'react';
 import { Message } from '@/model/Message';
 import { ChatContext } from '@/store/ChatContext';
 import Loader from '../UI/Loader';
 
 export default function MessageSection() {
-  const [messages, setMessages] = useState<Message[]>();
+  const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const chatCtx = useContext(ChatContext);
 
-  //For getting messages
+  //for getting messages
   useEffect(() => {
-    const getMessages = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(
-          `/api/message?chatId=${chatCtx.selectedChat?.id}&count=100`
+    setMessages([]);
+    setLoading(true);
+    if (chatCtx.selectedChat) {
+      (async () => {
+        const { db } = await import('../../util/firebase');
+        const { collection, onSnapshot, orderBy, query } = await import(
+          'firebase/firestore'
         );
-        const message = await res.json();
-        if (!res.ok) setError(message);
 
-        setMessages(message.result);
-      } catch (err: any) {
-        setError(err);
-      }
-      setLoading(false);
-    };
+        const q = query(
+          collection(db, 'chats', chatCtx.selectedChat?.id!, 'messages'),
+          orderBy('date')
+        );
+        const unsub = onSnapshot(q, (querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            const returnedMessage = { id: doc.id, ...doc.data() } as Message;
 
-    getMessages();
+            setMessages((prev) => {
+              if (!prev.some((message) => message.id === doc.id))
+                return [...prev, returnedMessage].filter((message) =>
+                  isNaN(+message.id)
+                );
+              else return prev.filter((message) => isNaN(+message.id));
+            });
+          });
+          setLoading(false);
+        });
+
+        return unsub;
+      })();
+    }
   }, [chatCtx.selectedChat]);
 
   return (

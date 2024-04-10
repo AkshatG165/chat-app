@@ -19,6 +19,9 @@ export default function Chats() {
   const searchCtx = useContext(SearchContext);
   const chatCtx = useContext(ChatContext);
 
+  //setting latest chat to message window
+  if (chats.length > 0) chatCtx.setSelectedChat(chats[0]);
+
   useEffect(() => {
     if (session) {
       (async () => {
@@ -36,8 +39,6 @@ export default function Chats() {
         );
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
-          console.log(snapshot.metadata.hasPendingWrites);
-
           snapshot.docChanges().forEach((change) => {
             const update = {
               id: change.doc.id,

@@ -7,68 +7,71 @@ import Loader from '../UI/Loader';
 import defaultUser from '../../public/defaultUser.jpg';
 import { useSession } from 'next-auth/react';
 import { Chat as ChatModel } from '@/model/Chat';
-import { Message } from '@/model/Message';
 import { ChatContext } from '@/store/ChatContext';
 import Image from 'next/image';
 
-type State = {
-  chat: ChatModel;
-  message?: Message;
-};
-
 export default function Chats() {
   const [searchedUsers, setSearchedUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [chats, setChats] = useState<State[]>();
-
+  const [chats, setChats] = useState<ChatModel[]>([]);
   const { data: session } = useSession();
   const searchCtx = useContext(SearchContext);
   const chatCtx = useContext(ChatContext);
 
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
+    if (session) {
+      (async () => {
+        const { db } = await import('../../util/firebase');
+        const { collection, onSnapshot, query, or, where } = await import(
+          'firebase/firestore'
+        );
 
-    const getChats = async () => {
-      setLoading(true);
+        const q = query(
+          collection(db, 'chats'),
+          or(
+            where('user1', '==', session.user.id),
+            where('user2', '==', session.user.id)
+          )
+        );
 
-      try {
-        const resChat = await fetch(`/api/chat?userId=${session?.user.id}`, {
-          signal: signal,
-        });
-        const chat = await resChat.json();
-        if (!resChat.ok) setError(chat);
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+          console.log(snapshot.metadata.hasPendingWrites);
 
-        (chat.result as ChatModel[]).forEach(async (chat) => {
-          const resMessages = await fetch(
-            `/api/message?chatId=${chat.id}&count=1`
-          );
-          const message = await resMessages.json();
-          if (!resMessages.ok) setError(message);
+          snapshot.docChanges().forEach((change) => {
+            const update = {
+              id: change.doc.id,
+              ...change.doc.data(),
+            } as ChatModel;
 
-          (message.result as Message[]).length > 0
-            ? setChats((prev) =>
-                prev
-                  ? [...prev, { chat, message: message.result[0] }]
-                  : [{ chat, message: message.result[0] }]
-              )
-            : await fetch(`/api/chat?chatId=${chat.id}`, {
-                method: 'DELETE',
+            if (change.type === 'added') {
+              setChats((prev) => {
+                if (!prev.some((chat) => chat.id === change.doc.id))
+                  return [...prev, update];
+                else return prev;
               });
+            }
+            if (change.type === 'modified') {
+              setChats((prev) =>
+                prev.map((chat) => {
+                  if (chat.id === change.doc.id) return update;
+                  else return chat;
+                })
+              );
+            }
+            if (change.type === 'removed') {
+              setChats((prev) =>
+                prev.filter((chat) => chat.id !== change.doc.id)
+              );
+            }
+          });
+          setLoading(false);
         });
-      } catch (err: any) {
-        setError(err);
-      }
-      setLoading(false);
-    };
 
-    getChats();
-
-    return () => {
-      controller.abort();
-    };
-  }, [session?.user.id]);
+        return unsubscribe;
+      })();
+    }
+  }, [session]);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -96,7 +99,9 @@ export default function Chats() {
       user2Name:
         e.currentTarget.lastElementChild?.firstElementChild?.innerHTML!,
       user2Img: (e.currentTarget.firstElementChild as HTMLImageElement).src,
+      lastMessage: undefined,
     };
+
     const res = await fetch('/api/chat', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -112,11 +117,7 @@ export default function Chats() {
       searchCtx.setSearchTerm('');
 
       const returnedChat = { id: chatId as string, ...data };
-      setChats((prev) =>
-        prev
-          ? [{ chat: returnedChat, message: undefined }, ...prev]
-          : [{ chat: returnedChat, message: undefined }]
-      );
+      setChats((prev) => [returnedChat, ...prev]);
       chatCtx.setSelectedChat(returnedChat);
     }
   };
@@ -144,12 +145,11 @@ export default function Chats() {
 
   const chatsList = chats
     ?.sort((a, b) => {
-      if (a.message && b.message) return +b.message.date - +a.message.date;
+      if (a.lastMessage?.message && b.lastMessage?.message)
+        return +b.lastMessage.date - +a.lastMessage.date;
       else return 0;
     })
-    .map((chat) => (
-      <Chat key={chat.chat.id} chat={chat.chat} message={chat.message} />
-    ));
+    .map((chat) => <Chat key={chat.id} chat={chat} />);
 
   return (
     <div className={classes.chats}>
@@ -161,6 +161,8 @@ export default function Chats() {
         ) : (
           <div className={classes.users}>{usersList}</div>
         )
+      ) : loading ? (
+        <Loader className={classes.loader} color="black" />
       ) : (
         chatsList
       )}

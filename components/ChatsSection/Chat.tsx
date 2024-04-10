@@ -4,17 +4,11 @@ import { FaCircle } from 'react-icons/fa';
 import { formatDate, formatTime } from '@/util/helper';
 import { Chat as ChatModel } from '@/model/Chat';
 import { useSession } from 'next-auth/react';
-import { Message } from '@/model/Message';
 import { useContext } from 'react';
 import { ChatContext } from '@/store/ChatContext';
 import Image from 'next/image';
 
-type Props = {
-  chat: ChatModel;
-  message?: Message;
-};
-
-export default function Chat({ chat, message }: Props) {
+export default function Chat({ chat }: { chat: ChatModel }) {
   const { data: session } = useSession();
   const chatCtx = useContext(ChatContext);
 
@@ -36,6 +30,7 @@ export default function Chat({ chat, message }: Props) {
           alt="profile-pic"
           height={40}
           width={40}
+          priority
           className={classes.profilepic}
         />
         {/* {chat.online && <FaCircle className={classes.dot} />} */}
@@ -45,15 +40,17 @@ export default function Chat({ chat, message }: Props) {
           <p className={classes.name}>
             {session?.user.id === chat.user1 ? chat.user2Name : chat.user1Name}
           </p>
-          {message && (
+          {chat.lastMessage?.message && (
             <p className={classes.date}>
-              {formatDate(message.date) === formatDate(Date.now())
-                ? formatTime(message.date)
-                : formatDate(message.date)}
+              {formatDate(chat.lastMessage.date) === formatDate(Date.now())
+                ? formatTime(chat.lastMessage.date)
+                : formatDate(chat.lastMessage.date)}
             </p>
           )}
         </div>
-        {message && <p className={classes.message}>{message.message}</p>}
+        {chat.lastMessage && (
+          <p className={classes.message}>{chat.lastMessage.message}</p>
+        )}
       </div>
     </Link>
   );

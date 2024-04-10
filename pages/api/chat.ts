@@ -10,6 +10,8 @@ import {
   or,
   deleteDoc,
   doc,
+  getDoc,
+  setDoc,
 } from 'firebase/firestore';
 
 export default async function handler(
@@ -77,6 +79,31 @@ export default async function handler(
 
     await deleteDoc(doc(db, 'chats', req.query.chatId as string));
     return res.status(201).json({ message: `Chat deleted successfully!` });
+  }
+
+  //PATCH request
+  if (req.method === 'PATCH') {
+    const { chatId, user1Name, user1Img, user2Name, user2Img, lastMessage } =
+      req.body;
+
+    if (!chatId) return res.status(422).json({ message: 'Invalid data' });
+
+    //checking if chat exists or not
+    const docSnap = await getDoc(doc(db, 'chats', chatId));
+    if (!docSnap.exists)
+      return res.status(422).json({ message: 'Invalid chat Id', chatId });
+
+    const existingData = { ...docSnap.data() };
+    for (let key in req.body) {
+      if (existingData.hasOwnProperty(key)) existingData[key] = req.body[key];
+    }
+
+    try {
+      await setDoc(doc(db, 'chats', chatId), existingData);
+      return res.status(201).json({ message: `Chat created successfully` });
+    } catch (e) {
+      return res.status(500).json({ message: `Unable to create chat - ${e}` });
+    }
   }
 
   //Anything else

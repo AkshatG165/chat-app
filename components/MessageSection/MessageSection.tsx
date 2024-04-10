@@ -6,6 +6,7 @@ import Messages from './Messages';
 import { Message } from '@/model/Message';
 import { ChatContext } from '@/store/ChatContext';
 import Loader from '../UI/Loader';
+import { BiMessageSquareDetail } from 'react-icons/bi';
 
 export default function MessageSection() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -50,13 +51,23 @@ export default function MessageSection() {
 
   return (
     <div className={classes.card}>
-      <Header />
-      {loading ? (
-        <Loader color="black" width={40} />
+      {chatCtx.selectedChat ? (
+        <>
+          <Header />
+          {loading ? (
+            <Loader color="black" width={40} />
+          ) : (
+            <Messages messages={messages} />
+          )}
+          <Input setMessages={setMessages} />
+        </>
       ) : (
-        <Messages messages={messages} />
+        <div className={classes.empty}>
+          <BiMessageSquareDetail className={classes.icon} />
+          <h2>Welcome to the Messaging App</h2>
+          <p>You can chat with your friends </p>
+        </div>
       )}
-      <Input setMessages={setMessages} />
     </div>
   );
 }

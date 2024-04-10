@@ -6,3 +6,21 @@
   flex-direction: column;
   padding: 10px;
 }
+
+.empty {
+  width: 300px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.icon {
+  width: 80px;
+  height: 80px;
+}
+
+.empty h2 {
+  text-align: center;
+}

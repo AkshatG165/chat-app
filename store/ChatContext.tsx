@@ -1,11 +1,5 @@
 import React, { createContext, useState } from 'react';
 import { Chat } from '@/model/Chat';
-// import { Message } from '@/model/Message';
-
-// export type State = {
-//   chat: Chat;
-//   message: Message[];
-// };
 
 type Context = {
   selectedChat: Chat | undefined;

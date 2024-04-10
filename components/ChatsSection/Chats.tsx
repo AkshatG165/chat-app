@@ -147,12 +147,20 @@ export default function Chats() {
     </div>
   ));
 
+  console.log(chats);
+
   const chatsList = chats
     ?.sort((a, b) => {
       if (a.lastMessage?.message && b.lastMessage?.message)
         return +b.lastMessage.date - +a.lastMessage.date;
       else return 0;
     })
+    //filtering out chats to not show up on sender's side if no message has been sent yet
+    .filter((chat) =>
+      chat.lastMessage && Object.keys(chat.lastMessage).length === 0
+        ? chat.user1 === session?.user.id
+        : chat
+    )
     .map((chat) => <Chat key={chat.id} chat={chat} />);
 
   return (

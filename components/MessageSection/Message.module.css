@@ -46,11 +46,17 @@
 }
 
 .date {
+  flex: auto;
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
   font-size: 11px;
-  min-height: 16px;
+  height: 16px;
   min-width: 52px;
-  flex: auto;
+  margin-top: 4px;
+}
+
+.delivered {
+  font-size: 14px;
+  width: 15px;
 }

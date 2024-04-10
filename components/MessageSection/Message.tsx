@@ -5,8 +5,8 @@ import { Message as MessageModel } from '@/model/Message';
 import { ChatContext } from '@/store/ChatContext';
 import { formatTime } from '@/util/helper';
 import { LuClock3 } from 'react-icons/lu';
-import { TiTick } from 'react-icons/ti';
 import Image from 'next/image';
+import { BiCheckDouble } from 'react-icons/bi';
 
 export default function Message({ message }: { message: MessageModel }) {
   const { data: session } = useSession();
@@ -103,7 +103,15 @@ export default function Message({ message }: { message: MessageModel }) {
         <p className={classes.text}>{message.message}</p>
         <p className={classes.date}>
           {formatTime(message.date)}
-          <span>{loading ? <LuClock3 /> : <TiTick />}</span>
+          {session?.user.id === message.from && (
+            <span>
+              {loading ? (
+                <LuClock3 />
+              ) : (
+                <BiCheckDouble className={classes.delivered} />
+              )}
+            </span>
+          )}
         </p>
       </div>
     </div>

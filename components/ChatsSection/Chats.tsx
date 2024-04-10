@@ -20,8 +20,10 @@ export default function Chats() {
   const chatCtx = useContext(ChatContext);
 
   //setting latest chat to message window
-  if (chats.length > 0 && !chatCtx.selectedChat)
-    chatCtx.setSelectedChat(chats[0]);
+  useEffect(() => {
+    if (chats.length > 0 && !chatCtx.selectedChat)
+      chatCtx.setSelectedChat(chats[0]);
+  }, [chatCtx, chats]);
 
   useEffect(() => {
     if (session) {

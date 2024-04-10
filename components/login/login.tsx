@@ -11,6 +11,7 @@ import { storage } from '@/util/firebase';
 import { useRouter } from 'next/router';
 import { signIn } from 'next-auth/react';
 import Loader from '../UI/Loader';
+import Image from 'next/image';
 
 export default function Login() {
   const [login, setLogin] = useState(true);
@@ -39,8 +40,11 @@ export default function Login() {
             profileImg.name
           }`
         );
-        const resp = await uploadBytes(imgRef, profileImg);
-        if (resp.metadata) data.profileImg = await getDownloadURL(imgRef);
+
+        if (profileImg.name) {
+          const resp = await uploadBytes(imgRef, profileImg);
+          if (resp.metadata) data.profileImg = await getDownloadURL(imgRef);
+        } else data.profileImg = '';
 
         const res = await fetch('/api/user', {
           method: 'POST',
@@ -97,7 +101,13 @@ export default function Login() {
             <div>
               <label htmlFor="profileImg">
                 {selectedImage ? (
-                  <img src={selectedImage}></img>
+                  <Image
+                    src={selectedImage}
+                    alt="profile-img"
+                    width={99}
+                    height={98}
+                    className={classes.img}
+                  />
                 ) : (
                   'Add an Image'
                 )}
@@ -149,7 +159,7 @@ export default function Login() {
         </form>
         {login ? (
           <p className={classes.register}>
-            Don't have an account yet?{' '}
+            Don&apos;t have an account yet?
             <button type="button" disabled={loading} onClick={toggleHandler}>
               Register
             </button>

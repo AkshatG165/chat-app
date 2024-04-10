@@ -90,9 +90,7 @@
   padding: 1px;
 }
 
-.login-form img {
-  width: 99px;
-  height: 98px;
+.img {
   border-radius: 5px;
   object-fit: cover;
 }

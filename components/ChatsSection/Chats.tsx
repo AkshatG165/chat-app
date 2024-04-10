@@ -9,6 +9,7 @@ import { useSession } from 'next-auth/react';
 import { Chat as ChatModel } from '@/model/Chat';
 import { ChatContext } from '@/store/ChatContext';
 import Image from 'next/image';
+import { GoSearch } from 'react-icons/go';
 
 export default function Chats() {
   const [searchedUsers, setSearchedUsers] = useState<User[]>([]);
@@ -173,8 +174,13 @@ export default function Chats() {
         )
       ) : loading ? (
         <Loader className={classes.loader} color="black" />
-      ) : (
+      ) : chatsList.length > 0 ? (
         chatsList
+      ) : (
+        <div className={classes.empty}>
+          <GoSearch className={classes.icon} />
+          <p>Search your friends & start the conversation! </p>
+        </div>
       )}
     </div>
   );

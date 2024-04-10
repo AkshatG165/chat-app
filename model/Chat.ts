@@ -1,3 +1,5 @@
+import { Message } from './Message';
+
 export class Chat {
   id: string;
   user1: string;
@@ -6,6 +8,7 @@ export class Chat {
   user2Name: string;
   user1Img: string;
   user2Img: string;
+  lastMessage: Message | undefined;
 
   constructor(
     id: string,
@@ -14,7 +17,8 @@ export class Chat {
     user2: string,
     user2Name: string,
     user1Img?: string,
-    user2Img?: string
+    user2Img?: string,
+    lastMessage?: Message
   ) {
     this.id = id;
     this.user1 = user1;
@@ -23,5 +27,6 @@ export class Chat {
     this.user2Name = user2Name;
     this.user1Img = user1Img ? user1Img : '';
     this.user2Img = user2Img ? user2Img : '';
+    this.lastMessage = lastMessage;
   }
 }

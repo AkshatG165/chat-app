@@ -13,6 +13,13 @@
   align-self: flex-end;
 }
 
+.imgContainer {
+  height: 100%;
+  width: 40px;
+  display: flex;
+  align-items: flex-start;
+}
+
 .profilepic {
   border-radius: 5px;
 }
@@ -59,4 +66,8 @@
 .delivered {
   font-size: 14px;
   width: 15px;
+}
+
+.marginTop {
+  margin-top: 5px;
 }

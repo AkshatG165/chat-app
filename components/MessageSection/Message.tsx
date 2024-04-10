@@ -8,11 +8,16 @@ import { LuClock3 } from 'react-icons/lu';
 import Image from 'next/image';
 import { BiCheckDouble } from 'react-icons/bi';
 
-export default function Message({ message }: { message: MessageModel }) {
+type Props = { message: MessageModel; prevMessage: MessageModel };
+
+export default function Message({ message, prevMessage }: Props) {
   const { data: session } = useSession();
   const chatCtx = useContext(ChatContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  //checking if margin-top is required for this message
+  const marginTop = prevMessage.from !== message.from ? classes.marginTop : '';
 
   //For sending messages to db
   useEffect(() => {
@@ -78,22 +83,26 @@ export default function Message({ message }: { message: MessageModel }) {
 
   return (
     <div
-      className={`${classes.msgContainer} ${
+      className={`${classes.msgContainer + ' ' + marginTop} ${
         message.from === session?.user.id ? classes.rightMsgContainer : ''
       }`}
     >
       {message.from !== session?.user.id && (
-        <Image
-          src={
-            session?.user.id === chatCtx.selectedChat?.user1
-              ? chatCtx.selectedChat?.user2Img || ''
-              : chatCtx.selectedChat?.user1Img || ''
-          }
-          alt="profile-pic"
-          height={40}
-          width={40}
-          className={classes.profilepic}
-        />
+        <div className={classes.imgContainer}>
+          {prevMessage.from !== message.from && (
+            <Image
+              src={
+                session?.user.id === chatCtx.selectedChat?.user1
+                  ? chatCtx.selectedChat?.user2Img || ''
+                  : chatCtx.selectedChat?.user1Img || ''
+              }
+              alt="profile-pic"
+              height={40}
+              width={40}
+              className={classes.profilepic}
+            />
+          )}
+        </div>
       )}
       <div
         className={`${classes.message} ${

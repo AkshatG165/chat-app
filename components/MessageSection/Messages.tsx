@@ -7,9 +7,22 @@ type Props = {
 };
 
 export default function Messages({ messages }: Props) {
-  const messagesList = messages?.map((message) => (
-    <Message key={message.id} message={message} />
-  ));
+  let currentIndex = 0;
+
+  const messagesList = messages?.map((message) => {
+    currentIndex += 1;
+    return (
+      <Message
+        key={message.id}
+        message={message}
+        prevMessage={
+          currentIndex - 2 >= 0
+            ? messages[currentIndex - 2]
+            : { id: '', date: 0, from: '', message: '' }
+        }
+      />
+    );
+  });
 
   return <div className={classes.container}>{messagesList}</div>;
 }

@@ -155,7 +155,7 @@ export default function Chats() {
         return +b.lastMessage.date - +a.lastMessage.date;
       else return 0;
     })
-    //filtering out chats to not show up on sender's side if no message has been sent yet
+    //filtering out chats to not show up on receiver's side if no message has been sent yet
     .filter((chat) =>
       chat.lastMessage && Object.keys(chat.lastMessage).length === 0
         ? chat.user1 === session?.user.id

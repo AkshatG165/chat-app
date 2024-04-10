@@ -147,8 +147,6 @@ export default function Chats() {
     </div>
   ));
 
-  console.log(chats);
-
   const chatsList = chats
     ?.sort((a, b) => {
       if (a.lastMessage?.message && b.lastMessage?.message)

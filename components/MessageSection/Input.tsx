@@ -8,7 +8,7 @@ import { Message } from '@/model/Message';
 import { useSession } from 'next-auth/react';
 
 type Props = {
-  setMessages: React.Dispatch<React.SetStateAction<Message[] | undefined>>;
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
 };
 
 export default function Input({ setMessages }: Props) {
@@ -41,7 +41,7 @@ export default function Input({ setMessages }: Props) {
         message: e.currentTarget.value,
       };
 
-      setMessages((prev) => (prev ? [...prev, message] : [message]));
+      setMessages((prev) => [...prev, message]);
       setVal('');
     }
   };

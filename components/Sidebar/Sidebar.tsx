@@ -5,6 +5,7 @@ import { signOut, useSession } from 'next-auth/react';
 import { TbMessage } from 'react-icons/tb';
 import { HiMiniUserGroup } from 'react-icons/hi2';
 import defaultUser from '../../public/defaultUser.jpg';
+import Image from 'next/image';
 
 export default function Sidebar() {
   const { data: session } = useSession();
@@ -15,14 +16,17 @@ export default function Sidebar() {
     <div className={classes.card}>
       <div className={classes.nav}>
         <Link href="#">
-          {session?.user.image ? (
-            <img src={session.user.image} className={classes.profilImg} />
-          ) : (
-            <img src={defaultUser.src} className={classes.profilImg} />
-          )}
+          <Image
+            src={session?.user.image ? session.user.image : defaultUser}
+            alt="profile-pic"
+            height={45}
+            width={45}
+            className={classes.profilImg}
+          />
+
           {session && <p>{session.user.firstName}</p>}
         </Link>
-        <Link href="#">
+        <Link href="/">
           <TbMessage className={classes.icon} />
           <p>Messages</p>
         </Link>

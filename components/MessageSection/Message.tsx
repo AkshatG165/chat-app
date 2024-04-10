@@ -42,10 +42,34 @@ export default function Message({ message }: { message: MessageModel }) {
       } catch (err: any) {
         setError(err);
       }
+    };
+
+    const updateChat = async () => {
+      delete data.chatId;
+      try {
+        const res = await fetch(`/api/chat`, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            chatId: chatCtx.selectedChat?.id,
+            lastMessage: data,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          signal: signal,
+        });
+
+        if (!res.ok) setError((await res.json()).result);
+      } catch (err: any) {
+        setError(err);
+      }
       setLoading((prev) => !prev);
     };
 
-    if (!isNaN(+message.id)) sendMessages();
+    if (!isNaN(+message.id)) {
+      sendMessages();
+      updateChat();
+    }
 
     return () => {
       controller.abort();

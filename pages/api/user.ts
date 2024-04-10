@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { hashPassword } from '@/util/helper';
-import { db } from '../../../util/firebase';
+import { db } from '../../util/firebase';
 import {
   collection,
   addDoc,
@@ -16,12 +16,12 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === 'POST') {
-    const { firstName, lastName, email, password, profileImg } = req.body;
+    const { firstName, lastName, email, password } = req.body;
     const hashedPassword = await hashPassword(password);
     const data = { ...req.body, password: hashedPassword };
     let emailExists = false;
 
-    if (!firstName || !lastName || !email || !password || !profileImg)
+    if (!firstName || !lastName || !email || !password)
       return res.status(422).json({ message: 'Invalid data' });
 
     //confirm that users does not exists already

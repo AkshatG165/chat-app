@@ -2,7 +2,11 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['firebasestorage.googleapis.com', 'localhost'],
+    domains: [
+      'firebasestorage.googleapis.com',
+      'localhost',
+      'chat-app-sooty-theta.vercel.app',
+    ],
   },
 };
 

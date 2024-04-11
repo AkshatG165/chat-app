@@ -26,6 +26,7 @@ export default function Chats() {
       chatCtx.setSelectedChat(chats[0]);
   }, [chatCtx, chats]);
 
+  //for getting chats, real-time
   useEffect(() => {
     if (session) {
       (async () => {
@@ -43,7 +44,7 @@ export default function Chats() {
         );
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
-          snapshot.docChanges().forEach((change) => {
+          snapshot.docChanges().forEach(async (change) => {
             const update = {
               id: change.doc.id,
               ...change.doc.data(),
@@ -107,6 +108,21 @@ export default function Chats() {
       lastMessage: undefined,
     };
 
+    //if user is chating with himself, change user2Id
+    //If I don't do so my db logic to check if chat already exists fails, it will always result in true
+    if (data.user1 === data.user2) data.user2 += '_';
+
+    setLoading(true);
+    if (
+      !chatCtx.selectedChat?.lastMessage ||
+      Object.keys(chatCtx.selectedChat.lastMessage).length < 1
+    ) {
+      const res = await fetch(`/api/chat?chatId=${chatCtx.selectedChat?.id}`, {
+        method: 'DELETE',
+      });
+      if (!res.ok) setError('Unable to delete the chat');
+    }
+
     const res = await fetch('/api/chat', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -114,8 +130,8 @@ export default function Chats() {
         'Content-Type': 'application/json',
       },
     });
-
-    if (!res.ok) setError('Unable to chat user');
+    setLoading(false);
+    if (!res.ok) setError('Unable to select user');
     else {
       const chatId = (await res.json()).result;
       setSearchedUsers([]);

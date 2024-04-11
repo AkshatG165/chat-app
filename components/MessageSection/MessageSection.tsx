@@ -7,12 +7,14 @@ import { Message } from '@/model/Message';
 import { ChatContext } from '@/store/ChatContext';
 import Loader from '../UI/Loader';
 import { BiMessageSquareDetail } from 'react-icons/bi';
+import { useSession } from 'next-auth/react';
 
 export default function MessageSection() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const chatCtx = useContext(ChatContext);
+  const { data: session } = useSession();
 
   //for getting messages
   useEffect(() => {
@@ -51,7 +53,8 @@ export default function MessageSection() {
 
   return (
     <div className={classes.card}>
-      {chatCtx.selectedChat ? (
+      {(chatCtx.selectedChat && messages.length > 0) ||
+      session?.user.id === chatCtx.selectedChat?.user1 ? (
         <>
           <Header />
           {loading ? (

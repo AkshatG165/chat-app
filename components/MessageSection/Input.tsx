@@ -19,7 +19,11 @@ export default function Input({ setMessages }: Props) {
   const resizeTextArea = () => {
     if (!textAreaRef.current) return;
     textAreaRef.current.style.height = 'auto';
-    textAreaRef.current.style.height = textAreaRef.current.scrollHeight + 'px';
+
+    textAreaRef.current.style.height =
+      textAreaRef.current.scrollHeight <= 200
+        ? textAreaRef.current.scrollHeight + 'px'
+        : '200px';
   };
 
   useEffect(resizeTextArea, [val]);
@@ -27,23 +31,32 @@ export default function Input({ setMessages }: Props) {
   const onChangeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
     setVal(e.target.value);
 
-  const enterHandler = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const enterHandler = (
+    e: React.KeyboardEvent<HTMLTextAreaElement> | KeyboardEvent
+  ) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
 
-      if (!e.currentTarget.value || e.currentTarget.value.trim().length === 0)
-        return;
+      if (!val || val.trim().length === 0) return;
 
       const message = {
         id: Date.now().toString(),
         date: Date.now(),
         from: session?.user.id!,
-        message: e.currentTarget.value,
+        message: val,
       };
-
       setMessages((prev) => [...prev, message]);
       setVal('');
     }
+  };
+
+  const onSendHandler = () => {
+    enterHandler(
+      new KeyboardEvent('keydown', {
+        key: 'Enter',
+        shiftKey: false,
+      })
+    );
   };
 
   return (
@@ -63,7 +76,7 @@ export default function Input({ setMessages }: Props) {
         <CgAttachment className={classes.icon} />
         <FaMicrophone className={classes.icon} />
         <MdPhoto className={classes.icon} />
-        <IoSend className={classes.icon} />
+        <IoSend className={classes.icon} onClick={onSendHandler} />
       </div>
     </div>
   );

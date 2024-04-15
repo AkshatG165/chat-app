@@ -1,6 +1,7 @@
 import classes from './Messages.module.css';
 import { Message as MessageModel } from '@/model/Message';
 import Message from './Message';
+import { useEffect } from 'react';
 
 type Props = {
   messages: MessageModel[] | undefined;
@@ -24,5 +25,18 @@ export default function Messages({ messages }: Props) {
     );
   });
 
-  return <div className={classes.container}>{messagesList}</div>;
+  //for scrolling to the bottom of the page
+  useEffect(() => {
+    const MsgContainer = document.getElementById('MsgContainer');
+    MsgContainer?.scrollTo({
+      top: MsgContainer.scrollHeight,
+      behavior: messages?.length === 50 ? 'instant' : 'smooth',
+    });
+  }, [messages]);
+
+  return (
+    <div id="MsgContainer" className={classes.container}>
+      {messagesList}
+    </div>
+  );
 }

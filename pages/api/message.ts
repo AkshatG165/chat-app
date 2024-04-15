@@ -8,6 +8,7 @@ import {
   query,
   orderBy,
   limit,
+  startAfter,
 } from 'firebase/firestore';
 
 export default async function handler(
@@ -39,21 +40,24 @@ export default async function handler(
 
   //GET request
   else if (req.method === 'GET') {
+    const { chatId, date, count } = req.query;
     let messages: DocumentData[] = [];
 
-    if (!req.query.chatId)
+    if (!chatId)
       return res.status(400).json({ message: `Chat Id is required` });
 
     const q =
-      +req.query.count! === 1
+      +count! === 1
         ? query(
-            collection(db, 'chats', req.query.chatId as string, 'messages'),
+            collection(db, 'chats', chatId as string, 'messages'),
             orderBy('date', 'desc'),
-            limit(+req.query.count!)
+            limit(+count!)
           )
         : query(
-            collection(db, 'chats', req.query.chatId as string, 'messages'),
-            orderBy('date')
+            collection(db, 'chats', chatId as string, 'messages'),
+            orderBy('date'),
+            startAfter(date ? +date : 0),
+            limit(+count!)
           );
 
     const querySnapshot = await getDocs(q);

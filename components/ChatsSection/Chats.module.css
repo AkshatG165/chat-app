@@ -14,10 +14,10 @@
   overflow: scroll;
 }
 
-.chats::-webkit-scrollbar,
+/* .chats::-webkit-scrollbar,
 .users::-webkit-scrollbar {
   display: none;
-}
+} */
 
 .user {
   display: flex;

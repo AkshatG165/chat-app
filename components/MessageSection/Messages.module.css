@@ -1,13 +1,9 @@
 .container {
   flex: 1 1 auto;
   margin: 10px 0;
-  padding: 5px;
+  padding: 5px 15px;
   overflow: scroll;
   display: flex;
   flex-direction: column;
   gap: 3px;
-}
-
-.container::-webkit-scrollbar {
-  display: none;
 }

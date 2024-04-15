@@ -1,5 +1,5 @@
 import classes from './Message.module.css';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { Message as MessageModel } from '@/model/Message';
 import { ChatContext } from '@/store/ChatContext';
@@ -16,15 +16,13 @@ export default function Message({ message, prevMessage }: Props) {
   const chatCtx = useContext(ChatContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const initialized = useRef(false);
 
   //checking if margin-top is required for this message
   const marginTop = prevMessage.from !== message.from ? classes.marginTop : '';
 
   //For sending messages to db
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-
     const data = {
       chatId: chatCtx.selectedChat?.id,
       date: message.date,
@@ -41,7 +39,6 @@ export default function Message({ message, prevMessage }: Props) {
           headers: {
             'Content-Type': 'application/json',
           },
-          signal: signal,
         });
         const message = await res.json();
         if (!res.ok) setError(message);
@@ -62,7 +59,6 @@ export default function Message({ message, prevMessage }: Props) {
           headers: {
             'Content-Type': 'application/json',
           },
-          signal: signal,
         });
 
         if (!res.ok) setError((await res.json()).result);
@@ -72,14 +68,12 @@ export default function Message({ message, prevMessage }: Props) {
       setLoading((prev) => !prev);
     };
 
-    if (!isNaN(+message.id)) {
+    if (!initialized.current && !isNaN(+message.id)) {
+      initialized.current = true;
+
       sendMessages();
       updateChat();
     }
-
-    return () => {
-      controller.abort();
-    };
   }, [chatCtx.selectedChat?.id, message]);
 
   return (

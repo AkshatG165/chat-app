@@ -10,6 +10,7 @@ import { Chat as ChatModel } from '@/model/Chat';
 import { ChatContext } from '@/store/ChatContext';
 import Image from 'next/image';
 import { GoSearch } from 'react-icons/go';
+import { Unsubscribe } from 'firebase/app-check';
 
 export default function Chats() {
   const [searchedUsers, setSearchedUsers] = useState<User[]>([]);
@@ -20,30 +21,26 @@ export default function Chats() {
   const searchCtx = useContext(SearchContext);
   const chatCtx = useContext(ChatContext);
 
-  //setting latest chat to message window
-  useEffect(() => {
-    if (chats.length > 0 && !chatCtx.selectedChat)
-      chatCtx.setSelectedChat(chats[0]);
-  }, [chatCtx, chats]);
-
   //for getting chats, real-time
   useEffect(() => {
-    if (session) {
-      (async () => {
-        const { db } = await import('../../util/firebase');
-        const { collection, onSnapshot, query, or, where } = await import(
-          'firebase/firestore'
-        );
+    let unsubscribe: Unsubscribe | undefined = undefined;
 
-        const q = query(
-          collection(db, 'chats'),
-          or(
-            where('user1', '==', session.user.id),
-            where('user2', '==', session.user.id)
-          )
-        );
+    const getChats = async () => {
+      const { db } = await import('../../util/firebase');
+      const { collection, onSnapshot, query, or, where } = await import(
+        'firebase/firestore'
+      );
 
-        const unsubscribe = onSnapshot(q, (snapshot) => {
+      const q = query(
+        collection(db, 'chats'),
+        or(
+          where('user1', '==', session?.user.id),
+          where('user2', '==', session?.user.id)
+        )
+      );
+
+      try {
+        unsubscribe = onSnapshot(q, (snapshot) => {
           snapshot.docChanges().forEach(async (change) => {
             const update = {
               id: change.doc.id,
@@ -71,12 +68,16 @@ export default function Chats() {
               );
             }
           });
-          setLoading(false);
         });
+      } catch (err: any) {
+        setError(err);
+      }
+      setLoading(false);
+    };
 
-        return unsubscribe;
-      })();
-    }
+    if (session) getChats();
+
+    return () => (unsubscribe ? unsubscribe() : undefined);
   }, [session]);
 
   useEffect(() => {

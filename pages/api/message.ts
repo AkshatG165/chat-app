@@ -55,8 +55,8 @@ export default async function handler(
           )
         : query(
             collection(db, 'chats', chatId as string, 'messages'),
-            orderBy('date'),
-            startAfter(date ? +date : 0),
+            orderBy('date', 'desc'),
+            startAfter(date ? +date : 9999999999999),
             limit(+count!)
           );
 

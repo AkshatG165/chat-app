@@ -21,6 +21,11 @@ export default function Chats() {
   const searchCtx = useContext(SearchContext);
   const chatCtx = useContext(ChatContext);
 
+  //for setting default chat, if none is selected
+  useEffect(() => {
+    if (!chatCtx.selectedChat) chatCtx.setSelectedChat(chats[0]);
+  }, [chatCtx, chats]);
+
   //for getting chats, real-time
   useEffect(() => {
     let unsubscribe: Unsubscribe | undefined = undefined;

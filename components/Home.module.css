@@ -2,3 +2,13 @@
   height: 100vh;
   display: flex;
 }
+
+@media (width <= 730px) {
+  .desktop {
+    display: none !important;
+  }
+
+  .mobile {
+    display: flex;
+  }
+}

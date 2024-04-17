@@ -2,10 +2,12 @@ import classes from './Input.module.css';
 import { IoSend } from 'react-icons/io5';
 import { CgAttachment } from 'react-icons/cg';
 import { FaMicrophone } from 'react-icons/fa';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { MdPhoto } from 'react-icons/md';
 import { Message } from '@/model/Message';
 import { useSession } from 'next-auth/react';
+import { IoIosArrowBack } from 'react-icons/io';
+import { ShowChatsContext } from '@/store/ShowChatsContext';
 
 type Props = {
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
@@ -15,6 +17,7 @@ export default function Input({ setMessages }: Props) {
   const [val, setVal] = useState('');
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const { data: session } = useSession();
+  const showChatsCtx = useContext(ShowChatsContext);
 
   const resizeTextArea = () => {
     if (!textAreaRef.current) return;
@@ -61,6 +64,13 @@ export default function Input({ setMessages }: Props) {
 
   return (
     <div className={classes.container}>
+      <button
+        type="button"
+        className={classes.back}
+        onClick={() => showChatsCtx.setShowChats(true)}
+      >
+        <IoIosArrowBack />
+      </button>
       <textarea
         id="message"
         name="message"

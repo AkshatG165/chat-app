@@ -33,3 +33,27 @@
   height: 17px;
   width: 17px;
 }
+
+.back {
+  display: none;
+}
+
+.back svg {
+  margin: 14px 9px 0 0;
+  font-size: 17px;
+}
+
+@media (width<=730px) {
+  .back {
+    display: inline-block;
+    height: 100%;
+    width: 43px;
+    text-align: center;
+    border: none;
+    background-color: inherit;
+  }
+
+  .back:hover {
+    cursor: pointer;
+  }
+}

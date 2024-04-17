@@ -8,12 +8,17 @@ import { useContext } from 'react';
 import { ChatContext } from '@/store/ChatContext';
 import Image from 'next/image';
 import defaultUser from '../../public/defaultUser.jpg';
+import { ShowChatsContext } from '@/store/ShowChatsContext';
 
 export default function Chat({ chat }: { chat: ChatModel }) {
   const { data: session } = useSession();
   const chatCtx = useContext(ChatContext);
+  const showChatsCtx = useContext(ShowChatsContext);
 
-  const handleChatSelect = () => chatCtx.setSelectedChat(chat);
+  const handleChatSelect = () => {
+    chatCtx.setSelectedChat(chat);
+    showChatsCtx.setShowChats(false);
+  };
 
   return (
     <Link

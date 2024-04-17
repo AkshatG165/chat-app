@@ -10,12 +10,12 @@ type Props = {
 };
 
 export const ShowChatsContext = createContext<Context>({
-  showChats: false,
+  showChats: true,
   setShowChats: (input: boolean) => {},
 });
 
 export default function ShowChatsContextProvider({ children }: Props) {
-  const [showChats, setShowChats] = useState(false);
+  const [showChats, setShowChats] = useState(true);
 
   return (
     <ShowChatsContext.Provider value={{ showChats, setShowChats }}>

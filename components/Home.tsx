@@ -10,8 +10,6 @@ import { ShowChatsContext } from '@/store/ShowChatsContext';
 export default function Home() {
   const showChatsCtx = useContext(ShowChatsContext);
 
-  console.log(showChatsCtx.showChats);
-
   return (
     <ChatContextProvider>
       <Card className={classes.card}>

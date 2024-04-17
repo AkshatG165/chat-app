@@ -7,13 +7,13 @@ import { HiMiniUserGroup } from 'react-icons/hi2';
 import defaultUser from '../../public/defaultUser.jpg';
 import Image from 'next/image';
 
-export default function Sidebar() {
+export default function Sidebar({ className }: { className?: string }) {
   const { data: session } = useSession();
 
   const logoutHandler = async () => await signOut();
 
   return (
-    <div className={classes.card}>
+    <div className={classes.card + ' ' + className}>
       <div className={classes.nav}>
         <Link href="#">
           <Image

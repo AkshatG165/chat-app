@@ -4,10 +4,10 @@ import Search from './Search';
 import Chats from './Chats';
 import SearchContextProvider from '@/store/SearchContext';
 
-export default function ChatsSection() {
+export default function ChatsSection({ className }: { className?: string }) {
   return (
     <SearchContextProvider>
-      <Card className={classes.card}>
+      <Card className={classes.card + ' ' + className}>
         <div className={classes.header}>
           <p>Messages</p>
         </div>

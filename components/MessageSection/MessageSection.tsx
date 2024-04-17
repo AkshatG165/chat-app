@@ -10,10 +10,14 @@ import { BiMessageSquareDetail } from 'react-icons/bi';
 import { useSession } from 'next-auth/react';
 import { Unsubscribe } from 'firebase/database';
 
+type Props = {
+  className?: string;
+};
+
 let fetchingOld = false;
 let startAfterIndex = 49;
 
-export default function MessageSection() {
+export default function MessageSection({ className }: Props) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -116,7 +120,7 @@ export default function MessageSection() {
   };
 
   return (
-    <div className={classes.card}>
+    <div className={classes.card + ' ' + className}>
       {(chatCtx.selectedChat && messages.length > 0) ||
       session?.user.id === chatCtx.selectedChat?.user1 ? (
         <>

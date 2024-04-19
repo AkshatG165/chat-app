@@ -2,6 +2,7 @@ import classes from './Login.module.css';
 import Card from '../UI/Card';
 import { useState } from 'react';
 import {
+  StorageReference,
   deleteObject,
   getDownloadURL,
   ref,
@@ -34,21 +35,22 @@ export default function Login() {
     }
 
     const profileImg = data.profileImg as File;
-    const imgRef = ref(
-      storage,
-      `profileImages/${Math.floor(Math.random() * 10000000000)}${
-        profileImg.name
-      }`
-    );
+    let imgRef: StorageReference | undefined = undefined;
 
     //if signup
     if (!login) {
       setLoading(true);
       try {
-        if (profileImg) {
+        if (profileImg.name) {
+          imgRef = ref(
+            storage,
+            `profileImages/${Math.floor(Math.random() * 10000000000)}${
+              profileImg.name
+            }`
+          );
           const resp = await uploadBytes(imgRef, profileImg);
           if (resp.metadata) data.profileImg = await getDownloadURL(imgRef);
-        } else data.profileImg = '';
+        }
 
         const res = await fetch('/api/user', {
           method: 'POST',
@@ -61,7 +63,7 @@ export default function Login() {
         if (!res.ok) {
           const message = (await res.json()).message;
           setError(message);
-          if (profileImg) await deleteObject(imgRef);
+          if (imgRef) await deleteObject(imgRef);
         } else {
           fromElem.reset();
           setSelectedImage(null);
@@ -83,7 +85,7 @@ export default function Login() {
     setLoading(false);
   };
 
-  const toggleHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const toggleHandler = () => {
     document.querySelector('form')?.reset();
     setSelectedImage(null);
     setLogin((prev) => !prev);

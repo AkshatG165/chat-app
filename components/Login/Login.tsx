@@ -26,22 +26,26 @@ export default function Login() {
     setError(null);
 
     const fd = new FormData(e.currentTarget);
+    let data = { ...Object.fromEntries(fd.entries()) };
 
-    setLoading(true);
+    if (data.password !== data.confirmPassword) {
+      setError("Passwords don't match");
+      return;
+    }
+
+    const profileImg = data.profileImg as File;
+    const imgRef = ref(
+      storage,
+      `profileImages/${Math.floor(Math.random() * 10000000000)}${
+        profileImg.name
+      }`
+    );
+
     //if signup
     if (!login) {
-      let data = { ...Object.fromEntries(fd.entries()) };
-      const profileImg = data.profileImg as File;
-
+      setLoading(true);
       try {
-        const imgRef = ref(
-          storage,
-          `profileImages/${Math.floor(Math.random() * 10000000000)}${
-            profileImg.name
-          }`
-        );
-
-        if (profileImg.name) {
+        if (profileImg) {
           const resp = await uploadBytes(imgRef, profileImg);
           if (resp.metadata) data.profileImg = await getDownloadURL(imgRef);
         } else data.profileImg = '';
@@ -57,7 +61,7 @@ export default function Login() {
         if (!res.ok) {
           const message = (await res.json()).message;
           setError(message);
-          await deleteObject(imgRef);
+          if (profileImg) await deleteObject(imgRef);
         } else {
           fromElem.reset();
           setSelectedImage(null);
@@ -65,6 +69,7 @@ export default function Login() {
           router.reload();
         }
       } catch (e: any) {
+        console.log('hi');
         setError(e);
       }
     } else {
@@ -152,6 +157,14 @@ export default function Login() {
             name="password"
             placeholder="Password"
           />
+          {!login && (
+            <input
+              id="confirmPassword"
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirm Password"
+            />
+          )}
           {error && <p className={classes.error}>{error}</p>}
           <button type="submit" disabled={loading}>
             {loading ? <Loader color={'white'} /> : login ? 'Login' : 'Sign Up'}

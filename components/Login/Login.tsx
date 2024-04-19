@@ -36,10 +36,10 @@ export default function Login() {
 
     const profileImg = data.profileImg as File;
     let imgRef: StorageReference | undefined = undefined;
+    setLoading(true);
 
     //if signup
     if (!login) {
-      setLoading(true);
       try {
         if (profileImg.name) {
           imgRef = ref(

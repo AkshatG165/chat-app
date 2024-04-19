@@ -9,10 +9,12 @@ import { ShowChatsContext } from '@/store/ShowChatsContext';
 
 export default function Home() {
   const showChatsCtx = useContext(ShowChatsContext);
+  const isMobile =
+    /(iPad|iPhone|Android|Mobile)/i.test(navigator.userAgent) || false;
 
   return (
     <ChatContextProvider>
-      <Card className={classes.card}>
+      <Card className={isMobile ? classes.cardMobile : classes.card}>
         <Sidebar
           className={showChatsCtx.showChats ? classes.mobile : classes.desktop}
         />

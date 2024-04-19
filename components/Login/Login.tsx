@@ -29,7 +29,7 @@ export default function Login() {
     const fd = new FormData(e.currentTarget);
     let data = { ...Object.fromEntries(fd.entries()) };
 
-    if (data.password !== data.confirmPassword) {
+    if (!login && data.password !== data.confirmPassword) {
       setError("Passwords don't match");
       return;
     }
@@ -50,7 +50,7 @@ export default function Login() {
           );
           const resp = await uploadBytes(imgRef, profileImg);
           if (resp.metadata) data.profileImg = await getDownloadURL(imgRef);
-        }
+        } else data.profileImg = '';
 
         const res = await fetch('/api/user', {
           method: 'POST',
@@ -71,7 +71,6 @@ export default function Login() {
           router.reload();
         }
       } catch (e: any) {
-        console.log('hi');
         setError(e);
       }
     } else {

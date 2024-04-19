@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
 
-export default function HomePage() {
+export default function HomePage({ isMobile }: { isMobile: boolean }) {
   return (
     <>
       <Head>
@@ -14,7 +14,7 @@ export default function HomePage() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <Home />
+        <Home isMobile={isMobile} />
       </main>
     </>
   );
@@ -27,6 +27,9 @@ type Context = {
 
 export async function getServerSideProps({ req, res }: Context) {
   const session = await getServerSession(req, res, authOptions);
+  let isMobile = (req ? req.headers['user-agent'] : navigator.userAgent)?.match(
+    /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
+  );
 
   if (!session) {
     return {
@@ -38,6 +41,6 @@ export async function getServerSideProps({ req, res }: Context) {
   }
 
   return {
-    props: { session },
+    props: { session, isMobile },
   };
 }

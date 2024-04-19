@@ -7,10 +7,8 @@ import ChatContextProvider from '@/store/ChatContext';
 import { useContext } from 'react';
 import { ShowChatsContext } from '@/store/ShowChatsContext';
 
-export default function Home() {
+export default function Home({ isMobile }: { isMobile: boolean }) {
   const showChatsCtx = useContext(ShowChatsContext);
-  const isMobile =
-    /(iPad|iPhone|Android|Mobile)/i.test(navigator.userAgent) || false;
 
   return (
     <ChatContextProvider>

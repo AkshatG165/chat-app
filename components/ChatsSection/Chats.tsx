@@ -20,6 +20,7 @@ export default function Chats() {
   const { data: session } = useSession();
   const searchCtx = useContext(SearchContext);
   const chatCtx = useContext(ChatContext);
+  console.log('23', chats);
 
   //for setting default chat, if none is selected
   useEffect(() => {
@@ -103,6 +104,7 @@ export default function Chats() {
   }, [searchCtx.searchTerm]);
 
   const selectUserHandler = async (e: React.MouseEvent<HTMLDivElement>) => {
+    console.log('Inside select handler');
     const data = {
       user1: session?.user.id!,
       user1Name: session?.user.firstName! + ' ' + session?.user.lastName!,
@@ -142,7 +144,7 @@ export default function Chats() {
       const chatId = (await res.json()).result;
       setSearchedUsers([]);
       searchCtx.setSearchTerm('');
-
+      console.log('147', chats);
       const returnedChat = { id: chatId as string, ...data };
       setChats((prev) => [returnedChat, ...prev]);
       chatCtx.setSelectedChat(returnedChat);

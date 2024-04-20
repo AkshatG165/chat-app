@@ -9,6 +9,7 @@ import { ShowChatsContext } from '@/store/ShowChatsContext';
 
 export default function Home({ isMobile }: { isMobile: boolean }) {
   const showChatsCtx = useContext(ShowChatsContext);
+  if (isMobile) showChatsCtx.setShowChats(false);
 
   return (
     <ChatContextProvider>
